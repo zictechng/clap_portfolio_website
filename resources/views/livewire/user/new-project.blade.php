@@ -102,19 +102,30 @@
 
                                             <div class="dashboard_body">
                                                 <form action="{{ url('/user/add-project') }}" method="post" enctype="multipart/form-data" wire:submit.prevent="addProject">
+                                                    @csrf
+                                                    @if ($errors->any())
+                                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
+                                                            <ul class="mb-0">
+                                                                @foreach ($errors->all() as $error)
+                                                                    <li>{{ $error }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        </div>
+                                                    @endif
                                                     @if(Session::has('message'))
-                                                        <div class="alert alert-success" role="alert">
+                                                        <div class="alert alert-success alert-dismissible fade show" role="alert" role="alert">
                                                             {{Session::get('message')}}
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                                         </div>
                                                     @endif
 
-                                                <div class="row">
-
-                                                    <div class="col-lg-12 col-12">
+                                                  <div class="row">
+                                                      <div class="col-lg-12 col-12">
                                                         <div class="profile_input_item">
                                                             <label for="first_name">Project title</label>
                                                             <div class="input_item">
-                                                                <input type="text" name="project_title" placeholder=" Project Title" wire:model='project_title'>
+                                                                <input type="text" name="project_title" value="{{ old('project_title') }}" placeholder=" Project Title" wire:model='project_title'>
                                                                 <span>150 characters remaining</span>
                                                             </div>
                                                         </div>
@@ -123,7 +134,7 @@
                                                         <div class="profile_input_item">
                                                             <label for="company">Project excerpt</label>
                                                             <div class="input_item height-100">
-                                                                <textarea name="project_concept" id="" placeholder="Project Concept" wire:model='project_concept'></textarea>
+                                                                <textarea name="project_concept" id="" placeholder="Project Concept" wire:model='project_concept'>{{ old('project_concept') }}</textarea>
                                                                 <span>150 characters remaining</span>
                                                             </div>
                                                         </div>
@@ -133,7 +144,7 @@
                                                         <div class="profile_input_item">
                                                             <label for="company">Project description</label>
                                                             <div class="input_item">
-                                                                <textarea name="project_description" id="" placeholder="project description" wire:model='project_description'></textarea>
+                                                                <textarea name="project_description" id="" placeholder="project description" wire:model='project_description'>{{ old('project_description') }}</textarea>
                                                                 <span>2000 characters remaining</span>
                                                             </div>
                                                         </div>
@@ -180,7 +191,8 @@
 
                                 {{-- Project tools section here --}}
                                 <div id="tools-info" class="tab-content">
-                                    <form>
+                                    <form method="post" action="{{ url('/user/project-tools') }}">
+                                        @csrf
                                     <div class="dash_board_card">
                                         <div class="inner_dashboard_section">
                                             <div class="dashboard_header">
@@ -188,6 +200,39 @@
                                                     Project Tools & Source Data
                                                 </h4>
                                             </div>
+                                                    {{-- Error message for checkboxes --}}
+                                                    @if ($errors->any())
+                                                            <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
+                                                            <ul>
+                                                                @foreach ($errors->all() as $error)
+                                                                    <li>{{ $error }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        </div>
+                                                    @endif
+
+                                                    @error('project_tag')
+                                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
+                                                            {{ $message }}
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        </div>
+                                                    @enderror
+
+                                                    @error('tool_data_url')
+                                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
+                                                            {{ $message }}
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        </div>
+                                                    @enderror
+
+                                                    @if(Session::has('message'))
+                                                        <div class="alert alert-success alert-dismissible fade show" role="alert" role="alert">
+                                                            {{Session::get('message')}}
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        </div>
+                                                    @endif
+
                                             <div class="project_tools_sections">
 
                                                 <div class="row">
@@ -197,11 +242,18 @@
                                                             <p>Which tools or languages were used in this project</p>
                                                         </div>
                                                     </div>
+
+                                                    {{-- Error message for input field --}}
+                                                    @error('tool_data')
+                                                        <div style="color:red;">{{ $message }}</div>
+                                                    @enderror
+
                                                     <div class="col-lg-4">
                                                         <div class="skill_tolls">
                                                             <div class="skill_tool_items">
+                                                                <input type="hidden" name="project_tag" value="{{ session('transaction_id') }}">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check1" name="option1" value="something" >
+                                                                    <input class="form-check-input" type="checkbox" id="check1" name="tool_ms_excel" value="ms_excel" {{ old('tool_ms_excel') ? 'checked' : '' }} >
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -225,7 +277,7 @@
                                                             </div>
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check2" name="option2" value="something" >
+                                                                    <input class="form-check-input" type="checkbox" id="check2" name="tool_python" value="python" {{ old('tool_python') ? 'checked' : '' }} >
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -241,7 +293,7 @@
                                                             </div>
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check3" name="option3" value="something" >
+                                                                    <input class="form-check-input" type="checkbox" id="check3" name="tool_sql" value="sql" {{ old('tool_sql') ? 'checked' : '' }} >
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -256,7 +308,7 @@
                                                             </div>
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check4" name="option4" value="something" >
+                                                                    <input class="form-check-input" type="checkbox" id="check4" name="tool_apache" value="apache" {{ old('tool_apache') ? 'checked' : '' }} >
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -283,7 +335,7 @@
                                                         <div class="skill_tolls">
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check3" name="option3" value="something" >
+                                                                    <input class="form-check-input" type="checkbox" id="check3" name="tool_tableau" value="tableau" {{ old('tool_tableau') ? 'checked' : '' }} >
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -305,7 +357,7 @@
                                                             </div>
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check3" name="option3" value="something" >
+                                                                    <input class="form-check-input" type="checkbox" id="check3" name="tool_power_bi" value="power bi" {{ old('tool_power_bi') ? 'checked' : '' }} >
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -319,24 +371,10 @@
                                                                     </label>
                                                                   </div>
                                                             </div>
+
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check4" name="option4" value="something" >
-                                                                    <label class="form-check-label">
-                                                                        <span class="tool_icons">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                                                <path d="M3.61816 18.3135V5.677M20.3822 9.937C20.3822 11.597 16.6582 12.93 12.0002 12.93C7.34216 12.93 3.61816 11.6015 3.61816 9.9415M20.3822 14.0635C20.3822 15.7235 16.6587 17.052 12.0002 17.052C7.34166 17.052 3.61816 15.724 3.61816 14.0635M3.61866 18.3185C3.61866 19.917 7.34166 21.25 12.0002 21.25C16.6587 21.25 20.3822 19.917 20.3822 18.3185V5.677M20.3822 5.6815C20.3822 7.3415 16.6582 8.67 12.0002 8.67C7.34216 8.67 3.61816 7.342 3.61816 5.6815C3.75116 4.083 7.41316 2.75 11.9337 2.75C16.5257 2.75 20.2492 4.078 20.3822 5.6815Z" stroke="#202020" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                                                              </svg>
-                                                                        </span>
-                                                                        <span class="tool_check_label">
-                                                                            SQL
-                                                                        </span>
-                                                                    </label>
-                                                                  </div>
-                                                            </div>
-                                                            <div class="skill_tool_items">
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check5" name="option5" value="something" >
+                                                                    <input class="form-check-input" type="checkbox" id="check5" name="tool_other" value="other" {{ old('tool_other') ? 'checked' : '' }} >
                                                                     <label class="form-check-label">
 
                                                                         <span class="tool_check_label">
@@ -363,7 +401,9 @@
                                                         <div class="profile_input_item">
                                                             <label for="first_name">Data Source URL</label>
                                                             <div class="input_item">
-                                                                <input type="text" placeholder="https://data.com">
+                                                                <input type="text" name="tool_data_url"
+                                                                value="{{ old('tool_data_url') }}"
+                                                                placeholder="https://data.com">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -372,7 +412,7 @@
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="submition_btn text-right">
-                                                <button class="copy_button_link">Save</button>
+                                                <button class="copy_button_link" type="submit">Save</button>
                                             </div>
                                         </div>
                                     </div>
@@ -387,19 +427,42 @@
                                                 <h4>
                                                     Embed Media
                                                 </h4>
+                                                @if(Session::has('message'))
+                                                    <div class="alert alert-success alert-dismissible fade show" role="alert" role="alert">
+                                                        {{Session::get('message')}}
+                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                    </div>
+                                                    @endif
+
+                                                    
+
+                                                    @if ($errors->any())
+                                                            <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
+                                                            <ul>
+                                                                @foreach ($errors->all() as $error)
+                                                                    <li>{{ $error }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        </div>
+                                                    @endif
+
                                                 <p>
                                                     Which tools or languages<br>were used in this project
                                                 </p>
                                             </div>
 
                                             <div class="dashboard_body mt-4">
-                                                <div class="row">
+                                            <form method="post" action="{{ url('/user/embed-media') }}">
+                                                @csrf
+                                            <input type="text" name="project_tag" value="{{ session('transaction_id') }}">
 
+                                                <div class="row">
                                                     <div class="col-lg-12">
                                                         <div class="profile_input_item">
                                                             <label for="md_name">Media name</label>
                                                             <div class="input_item">
-                                                                <input type="text" placeholder="" class="mb-2">
+                                                                <input type="text" value="{{ old('media_name') }}" name="media_name" placeholder="Enter media name" class="mb-2">
                                                                 <span class="">This is for all your embedded content</span>
                                                             </div>
                                                         </div>
@@ -408,15 +471,15 @@
                                                         <div class="profile_input_item">
                                                             <label for="Occupation">Embed type</label>
                                                             <div class="input_item">
-                                                                <select name="" id=""  class="form-select">
-                                                                    <option value="">
+                                                                <select name="embed_type" id=""  class="form-select">
+                                                                    <option value="{{ old('embed_type') }}">
                                                                         Choose option
                                                                     </option>
-                                                                    <option value="">Power BI</option>
-                                                                    <option value="">Tableau</option>
-                                                                    <option value="">Youtube</option>
-                                                                    <option value="">Jupyter Notebook</option>
-                                                                    <option value="">Vimeo</option>
+                                                                    <option value="Power BI">Power BI</option>
+                                                                    <option value="Tableau">Tableau</option>
+                                                                    <option value="Youtube">Youtube</option>
+                                                                    <option value="Jupyter">Jupyter Notebook</option>
+                                                                    <option value="Vimeo">Vimeo</option>
                                                                 </select>
 
                                                             </div>
@@ -426,14 +489,14 @@
                                                         <div class="profile_input_item">
                                                             <label for="Occupation">Aspect Ratio</label>
                                                             <div class="input_item">
-                                                                <select name="" id="" class="form-select">
-                                                                    <option value="">
+                                                                <select name="embed_ratio" id="" class="form-select">
+                                                                    <option value="{{ old('embed_ratio') }}">
                                                                         Choose option
                                                                     </option>
-                                                                    <option value="">Horizontal 1:1</option>
-                                                                    <option value="">Horizontal 2:1</option>
-                                                                    <option value="">Vertical 1:2</option>
-                                                                    <option value="">Vertical 1:1</option>
+                                                                    <option value="Horizontal 1:1">Horizontal 1:1</option>
+                                                                    <option value="Horizontal 2:1">Horizontal 2:1</option>
+                                                                    <option value="Vertical 1:2">Vertical 1:2</option>
+                                                                    <option value="Vertical 1:1">Vertical 1:1</option>
                                                                 </select>
 
                                                             </div>
@@ -442,10 +505,11 @@
 
                                                     <div class="col-lg-12">
                                                         <div class="submition_btn text-right">
-                                                            <button class="copy_button_link">Save</button>
+                                                            <button type="submit" class="copy_button_link">Save</button>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </form>
                                             </div>
 
                                         </div>

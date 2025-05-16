@@ -17,21 +17,6 @@ class NewProject extends Component
     public $user_uid;
     public $user_email;
 
-    public function add_newProject(Request $request)
-    {
-        $user = auth()->user();
-        $project = new Project();
-
-        $project->user_uid = $user->id;
-        $project->user_email =$user->email;
-        $project->project_title = $request->project_title;
-        $project->project_concept = $request->project_concept;
-        $project->project_description = $request->project_description;
-
-        $project->save();
-        return redirect()->back()->with('message', 'Project added successfully!');
-    }
-
 
     public function render()
     {

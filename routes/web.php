@@ -18,6 +18,7 @@ use App\Http\Livewire\User\UserCredentials;
 use App\Http\Livewire\User\UserProfileComponent;
 use App\Http\Livewire\User\UserStoreCredentials;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -75,7 +76,9 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
 
     // All post url goes here
     Route::post('/user/add-project', NewProject::class)->name('user.new-project');
-    Route::post('/user/add-project', [NewProject::class, 'add_newProject'])->name('user.add-project');
+    Route::post('/user/add-project', [ProjectController::class, 'add_newProject'])->name('user.add-project');
+    Route::post('/user/project-tools', [ProjectController::class, 'project_tools'])->name('user.project-tools');
+    Route::post('/user/embed-media', [ProjectController::class, 'save_EmbedMedia'])->name('user.embed-media');
 });
 
 
