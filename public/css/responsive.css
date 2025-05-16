@@ -1,0 +1,50 @@
+@media only screen and (max-width: 999px) and (min-width: 300px) {
+    h1.competitor_headings {
+        font-size: 27px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+    h1.sb_headings {
+
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+    .column_wrapers.column_wrapers_none {
+        margin-bottom: 40px;
+    }
+
+    .benchmarkingReport {
+        padding-top: 40px;
+    }
+
+    .more_projects {
+        padding-top: 45px;
+    }
+
+    .project_card {
+        margin-bottom: 25px;
+    }
+    .main_section_for_profile_view{
+        padding-top: 0px;
+    }
+    .profile_card_areas {
+        position: relative;
+        top: -60px;
+    }
+    .project_card_item {
+        flex-direction: column;
+    }
+    
+    .project_card_item .project_image {
+        width: 100%;
+    }
+    .filter_btns_section>button {
+        padding: 12px 15px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+    }
+}
