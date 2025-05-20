@@ -158,8 +158,8 @@
                                     <div class="profile_image_controller d-flex align-items-center gap-3 justify-content-between">
                                         <div class="combo mb-4 d-flex align-items-center gap-2">
                                             <div class="profile_images">
-                                                @if(!empty($user_details->profile_url) && file_exists(public_path('profile_images/' . $user_details->profile_url)))
-                                                    <img src="{{ asset('profile_images/' . $user_details->profile_url) }}" alt="Profile Image" style="max-width: 88px; height: 88px;" class="rounded-circle object-fit: cover;" >
+                                                @if(!empty($user_details?->profile_url) && file_exists(public_path('profile_images/' . $user_details?->profile_url)))
+                                                    <img src="{{ asset('profile_images/' . $user_details?->profile_url) }}" alt="Profile Image" style="max-width: 88px; height: 88px;" class="rounded-circle object-fit: cover;" >
                                                 @else
                                                     <img src="{{ asset('dashboardAsset/images/profile_pics.png') }}" alt="Default Image" style="max-width: 100%; height: auto;">
                                                 @endif
@@ -183,7 +183,7 @@
                                                     <label for="first_name">First name</label>
                                                     <div class="input_item">
                                                         <input type="text" name="name"
-                                                        value="{{ $user_details->name }}" placeholder="First Name">
+                                                        value="{{ $user_details?->name }}" placeholder="First Name">
                                                     </div>
                                                 </div>
                                             </div>
@@ -191,7 +191,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="first_name">Last name</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="other_name" value="{{ $user_details->lname }}" placeholder="Last Name">
+                                                        <input type="text" name="other_name" value="{{ $user_details?->lname }}" placeholder="Last Name">
                                                     </div>
                                                 </div>
                                             </div>
@@ -201,7 +201,7 @@
                                                     <label for="first_name">Email address</label>
                                                     <div class="input_item">
                                                         <input type="text" name="email"
-                                                        value="{{ $user_details->email }}" placeholder="Email address" readonly>
+                                                        value="{{ $user_details?->email }}" placeholder="Email address" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -210,7 +210,7 @@
                                                     <label for="Occupation">Occupation</label>
                                                     <div class="input_item">
                                                         <input type="text" name="occupation"
-                                                        value="{{ $user_details->user_occupation }}" name="Occupation">
+                                                        value="{{ $user_details?->user_occupation }}" name="Occupation">
                                                     </div>
                                                 </div>
                                             </div>
@@ -218,7 +218,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Company</label>
                                                     <div class="input_item">
-                                                        <input type="text" value="{{ $user_details->user_company }}" name="company">
+                                                        <input type="text" value="{{ $user_details?->user_company }}" name="company">
                                                     </div>
                                                 </div>
                                             </div>
@@ -227,7 +227,7 @@
                                                     <label for="company">Biography</label>
                                                     <div class="input_item">
                                                         <textarea name="bio" id="">
-                                                            {{$user_details->user_biography}}
+                                                            {{$user_details?->user_biography}}
                                                         </textarea>
                                                         <span>1500 characters remaining</span>
                                                     </div>
@@ -264,8 +264,8 @@
                                         <div class="file_upload_area">
                                             <input type="file" name="banner_image" id="imageInput">
                                         </div>
-                                            @if(!empty($user_details->user_profile_banner) && file_exists(public_path('profile_images/' . $user_details->user_profile_banner)))
-                                            <img src="{{ asset('profile_images/' . $user_details->user_profile_banner) }}" alt="banner Image" style="max-width: 90%; height: auto; border-radius: 12px" class="object-fit: cover;" >
+                                            @if(!empty($user_details?->user_profile_banner) && file_exists(public_path('profile_images/' . $user_details?->user_profile_banner)))
+                                            <img src="{{ asset('profile_images/' . $user_details?->user_profile_banner) }}" alt="banner Image" style="max-width: 90%; height: auto; border-radius: 12px" class="object-fit: cover;" >
                                             @else
                                                 <div class="upload_of_content">
                                                     <div class="inner_upload_of_content">
@@ -322,7 +322,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="Linkedin">Linkedin</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="linkedin" value="{{ $social_details->social_linkedin }}" placeholder="Linkedin URL">
+                                                        <input type="text" name="linkedin" value="{{ $social_details?->social_linkedin }}" placeholder="Linkedin URL">
                                                     </div>
                                                 </div>
                                             </div>
@@ -331,7 +331,7 @@
                                                     <label for="Occupation">Github</label>
                                                     <div class="input_item">
                                                         <input type="text" name="github"
-                                                        value="{{ $social_details->social_github }}" placeholder="Github URL">
+                                                        value="{{ $social_details?->social_github }}" placeholder="Github URL">
                                                     </div>
                                                 </div>
                                             </div>
@@ -340,7 +340,7 @@
                                                     <label for="company">Company</label>
                                                     <div class="input_item">
                                                         <input type="text" name="company"
-                                                        value="{{ $social_details->social_company }}" placeholder="Company">
+                                                        value="{{ $social_details?->social_company }}" placeholder="Company">
                                                     </div>
                                                 </div>
                                             </div>
@@ -349,7 +349,7 @@
                                                     <label for="company">Youtube</label>
                                                     <div class="input_item">
                                                         <input type="text" name="youtube"
-                                                        value="{{ $social_details->social_youtube }}" placeholder="Youtube URL">
+                                                        value="{{ $social_details?->social_youtube }}" placeholder="Youtube URL">
                                                     </div>
                                                 </div>
                                             </div>
@@ -382,7 +382,7 @@
                                         <div class="add_exp_btn">
                                             <div class="exp_items">
                                                 <div class="exp_items_header d-flex align-items-center justify-content-space-between">
-                                                    <h4>{{ $work_experiences->job_title }}</h4>
+                                                    <h4>{{ $work_experiences?->job_title }}</h4>
                                                     <div class="tool_exp_areas">
                                                         <span class="edit_icon">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
@@ -398,12 +398,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="inner_wrapers_items">
-                                                    <h4>{{ $work_experiences->job_organization }}</h4>
+                                                    <h4>{{ $work_experiences?->job_organization }}</h4>
                                                     <h4>
-                                                        {{ \Carbon\Carbon::parse($work_experiences->job_start_date)->format('d M, Y') }}
+                                                        {{ \Carbon\Carbon::parse($work_experiences?->job_start_date)->format('d M, Y') }}
                                                             -
-                                                            @if ($work_experiences->job_end_date)
-                                                                {{ \Carbon\Carbon::parse($work_experiences->job_end_date)->format('d M, Y') }}
+                                                            @if ($work_experiences?->job_end_date)
+                                                                {{ \Carbon\Carbon::parse($work_experiences?->job_end_date)->format('d M, Y') }}
                                                             @else
                                                                 Till date
                                                             @endif
@@ -446,7 +446,7 @@
 
                                             <div class="exp_items">
                                                 <div class="exp_items_header d-flex align-items-center justify-content-space-between">
-                                                    <h4>{{ $user_educations->degree_name }}</h4>
+                                                    <h4>{{ $user_educations?->degree_name }}</h4>
                                                     <div class="tool_exp_areas">
                                                         <span class="edit_icon" data-bs-toggle="modal" data-bs-target="#education_modal">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
@@ -463,8 +463,8 @@
                                                 </div>
                                                 <div class="inner_wrapers_items">
                                                     {{-- <h4><strong>{{ $user_educations->degree_name }} </strong></h4> --}}
-                                                    <h4>{{ $user_educations->institution_name }}</h4>
-                                                    <h4>{{ \Carbon\Carbon::parse($user_educations->start_date)->format('d M, Y') }} - {{ \Carbon\Carbon::parse($user_educations->end_date)->format('d M, Y') }}</h4>
+                                                    <h4>{{ $user_educations?->institution_name }}</h4>
+                                                    <h4>{{ \Carbon\Carbon::parse($user_educations?->start_date)->format('d M, Y') }} - {{ \Carbon\Carbon::parse($user_educations?->end_date)->format('d M, Y') }}</h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -504,7 +504,7 @@
 
                                                     <div class="input_item">
                                                         <input type="text" name="web_link_name"
-                                                        value="{{ $user_details->web_link }}" placeholder="Enter your website URL ">
+                                                        value="{{ $user_details?->web_link }}" placeholder="Enter your website URL ">
                                                     </div>
                                                 </div>
                                             </div>
@@ -602,7 +602,7 @@
                                             <div class="col-lg-6 col-md-6 col-12">
                                                 <div class="profile_input_item height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch" name="email_like" value="true" {{ $preference->like_notify ? 'checked' : '' }} style="cursor: pointer;">
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch" name="email_like" value="true" {{ $preference?->like_notify ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch">
                                                             <h4>Likes</h4>
                                                             <p>Get notified via email when someone likes your project</p>
@@ -611,7 +611,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch2" name="email_comment" value="true" {{ $preference->comment_notify ? 'checked' : '' }} style="cursor: pointer;">
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch2" name="email_comment" value="true" {{ $preference?->comment_notify ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch2">
                                                             <h4>Comments</h4>
                                                             <p>Get notified via email when someone comments on your project</p>
@@ -620,7 +620,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch3" name="email_share" value="true" {{ $preference->share_notify ? 'checked' : '' }} style="cursor: pointer;">
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch3" name="email_share" value="true" {{ $preference?->share_notify ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch3">
                                                             <h4>Share</h4>
                                                             <p>Get notified via email when someone shares your project</p>
@@ -648,7 +648,7 @@
                                             <div class="col-lg-6 col-md-6 col-12">
                                                 <div class="profile_input_item height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c1s" name="show_link" value="true" {{ $preference->show_social_link ? 'checked' : '' }} style="cursor: pointer;">
+                                                        <input class="form-check-input" type="checkbox" id="c1s" name="show_link" value="true" {{ $preference?->show_social_link ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="c1s">
                                                             <h4>Show social links</h4>
                                                             <p>If turn on, this will show your social links in your public profile</p>
@@ -657,7 +657,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c2s" name="show_edu" value="true" {{ $preference->show_education ? 'checked' : '' }} style="cursor: pointer;">
+                                                        <input class="form-check-input" type="checkbox" id="c2s" name="show_edu" value="true" {{ $preference?->show_education ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="c2s">
                                                             <h4>Show education</h4>
                                                             <p>When turn on, it will display your education in your public profile</p>
@@ -666,7 +666,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c3s" name="show_work_exp" value="true" {{ $preference->show_work_experience ? 'checked' : '' }} style="cursor: pointer;">
+                                                        <input class="form-check-input" type="checkbox" id="c3s" name="show_work_exp" value="true" {{ $preference?->show_work_experience ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="c3s">
                                                             <h4>Show work experience</h4>
                                                             <p>If turn on, it will show your work experience in public profile</p>
@@ -675,7 +675,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c4s" name="show_other" value="true" {{ $preference->show_other_link ? 'checked' : '' }} style="cursor: pointer;">
+                                                        <input class="form-check-input" type="checkbox" id="c4s" name="show_other" value="true" {{ $preference?->show_other_link ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="c4s">
                                                             <h4>Show additional links</h4>
                                                             <p>When turn on, this will display other links in your public profile</p>

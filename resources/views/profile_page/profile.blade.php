@@ -279,7 +279,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="Linkedin">Linkedin</label>
                                                     <div class="input_item">
-                                                        <input type="text" value="{{ $social_details->social_linkedin }}" placeholder="" readonly>
+                                                        <input type="text" value="{{ $social_details?->social_linkedin }}" placeholder="" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -287,7 +287,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="Occupation">Github</label>
                                                     <div class="input_item">
-                                                        <input type="text" value="{{ $social_details->social_github }}" readonly placeholder="Github">
+                                                        <input type="text" value="{{ $social_details?->social_github }}" readonly placeholder="Github">
                                                     </div>
                                                 </div>
                                             </div>
@@ -295,7 +295,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Company</label>
                                                     <div class="input_item">
-                                                        <input type="text" value="{{ $social_details->social_company }}" placeholder="Company" readonly>
+                                                        <input type="text" value="{{ $social_details?->social_company }}" placeholder="Company" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -303,7 +303,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Youtube</label>
                                                     <div class="input_item">
-                                                        <input type="text" value="{{ $social_details->social_youtube }}" placeholder="Youtube" readonly>
+                                                        <input type="text" value="{{ $social_details?->social_youtube }}" placeholder="Youtube" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -517,7 +517,7 @@
                                             <div class="col-lg-6 col-md-6 col-12">
                                                 <div class="profile_input_item height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value="yes" {{ $preference->like_notify ? 'checked' : '' }}
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value="yes" {{ $preference?->like_notify ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch">
                                                             <h4>Likes</h4>
@@ -527,7 +527,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch2" name="darkmode" value="yes" {{ $preference->comment_notify ? 'checked' : '' }}
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch2" name="darkmode" value="yes" {{ $preference?->comment_notify ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch2">
                                                             <h4>Comments</h4>
@@ -537,7 +537,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch3" name="darkmode" value="yes" {{ $preference->share_notify ? 'checked' : '' }}
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch3" name="darkmode" value="yes" {{ $preference?->share_notify ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch3">
                                                             <h4>Share</h4>
@@ -566,7 +566,7 @@
                                             <div class="col-lg-6 col-md-6 col-12">
                                                 <div class="profile_input_item height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c1s" name="darkmode" value="yes" {{ $preference->show_social_link ? 'checked' : '' }}
+                                                        <input class="form-check-input" type="checkbox" id="c1s" name="darkmode" value="yes" {{ $preference?->show_social_link ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="c1s">
                                                             <h4>Show social links</h4>
@@ -576,7 +576,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c2s" name="darkmode" value="yes" {{ $preference->show_education ? 'checked' : '' }}
+                                                        <input class="form-check-input" type="checkbox" id="c2s" name="darkmode" value="yes" {{ $preference?->show_education ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="c2s">
                                                             <h4>Show education</h4>
@@ -586,7 +586,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c3s" name="darkmode" value="yes" {{ $preference->show_work_experience ? 'checked' : '' }}
+                                                        <input class="form-check-input" type="checkbox" id="c3s" name="darkmode" value="yes" {{ $preference?->show_work_experience ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="c3s">
                                                             <h4>Show work experience</h4>
@@ -596,7 +596,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c4s" name="darkmode" value="yes" {{ $preference->show_other_link ? 'checked' : '' }}
+                                                        <input class="form-check-input" type="checkbox" id="c4s" name="darkmode" value="yes" {{ $preference?->show_other_link ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="c4s">
                                                             <h4>Show additional links</h4>

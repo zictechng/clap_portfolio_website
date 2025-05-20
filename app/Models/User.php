@@ -28,6 +28,9 @@ class User extends Authenticatable
         'lname',
         'email',
         'password',
+        'user_otp',
+        'acct_status',
+        'email_verified_at',
     ];
 
     /**

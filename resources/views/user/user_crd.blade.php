@@ -23,8 +23,8 @@
                         <div class="inner_profile_boxs">
                             <div class="profile_top">
                                 <div class="profile_image">
-                                    @if(!empty($user_details->profile_url) && file_exists(public_path('profile_images/' . $user_details->profile_url)))
-                                        <img src="{{ asset('profile_images/' . $user_details->profile_url) }}" alt="Profile Image" style="max-width: 80px; height: 80px;" class="rounded-circle object-fit: cover;">
+                                    @if(!empty($user_details?->profile_url) && file_exists(public_path('profile_images/' . $user_details?->profile_url)))
+                                        <img src="{{ asset('profile_images/' . $user_details?->profile_url) }}" alt="Profile Image" style="max-width: 80px; height: 80px;" class="rounded-circle object-fit: cover;">
                                     @else
                                         <img src="{{ asset('dashboardAsset/images/avatar.png') }}" alt="Default Image" style="max-width: 100%; height: auto;">
                                     @endif

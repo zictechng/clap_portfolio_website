@@ -52,8 +52,12 @@ Route::get('/activate-account', VerifyAccount::class)->name('activate-account');
 
 Route::post('/register', [RegisteredUserController::class, 'store'])
     ->name('register');
-Route::post('/otp_activation', [VerifyAccount::class, 'ActivateAccount'])
+Route::post('/otp_activation', [RegisteredUserController::class, 'ActivateAccount'])
     ->name('otp_activation');
+
+    Route::post('/otp_resend', [RegisteredUserController::class, 'resendOtp'])
+    ->name('otp_resend');
+
 Route::post('/login', [LoginAuthenticatedSessionController::class, 'store'])
 ->name('login');
 

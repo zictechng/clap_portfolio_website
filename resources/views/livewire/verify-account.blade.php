@@ -49,33 +49,48 @@
                         @if(Session::has('message'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert" role="alert">
                                 {{Session::get('message')}}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @endif
-                            <p class="bg-gradient-primary text-center" style="color:white;">OTP code send to <strong> welcome@gmail.com</strong></p>
+                        @if ($errors->any())
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert" role="alert">
+                                <ul class="list-disc list-inside">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
-                        <p class="text-center"><x-jet-validation-errors class="mb-4" style="color: #D59133" /></p>
+                        @if(session('user_email'))
+                        <p class="bg-gradient-primary text-center" style="color:white;">A verification code was sent to: <strong>{{ session('user_email') }}</strong> to activate your account</p>
+                        @endif
 
-                        <form method="POST" action="{{ route('otp_activate') }}">
+                        <form method="POST" action="{{ route('otp_activation') }}">
                             @csrf
                             <!-- Form Group (email address)-->
                             <div class="mb-3 custom_input_fields">
                                 <label class="small mb-1 text-white" for="inputEmailAddress">OTP Code</label>
                                 <input class="form-control" type="text" name="otp_code" id="otp_code" placeholder="Enter OTP Code" autofocus required>
                             </div>
-
-                            <!-- Form Group (remember password checkbox)-->
-                            <div class="mb-3 float-right">
-                                <div class="form-check">
-                                    <a class="small" href="#">Resend Code</a>
-                                </div>
-                            </div>
-
+                            <input type="hidden" name="otp_email" value="{{ session('user_email') }}">
                             <br/>
 
-                            <button class="btn btn-google border-0 google_button btn-user btn-block button_login rounded-pill">
+                            <button class="btn btn-google border-0 google_button btn-user btn-block button_login rounded-pill" type="submit">
                                 Activate
                             </button>
+                        </form>
+                        <br/>
+                        <form method="POST" action="{{ route('otp_resend') }}" id="resend-form">
+                            @csrf
+                            <input type="hidden" name="otp_resend_email" value="{{ session('user_email') }}">
+                            <div class="mb-9 text-center mt-20">
+                                <div class="form-check">
+                                    <a class="small" type="submit" onclick="document.getElementById('resend-form').submit(); return false;">Resend Code</a>
+                                </div>
+                            </div>
+                        </form>
+
+
                             <div class="small mt-3 text-center" style="color:white;">
                                 If you didn't receive the code, please check your spam folder or click resend code to request a new code.<br/>
                                 <a href="#" style="color: #D59133"> Terms of service</a> and <a href="" style="color: #D59133"> privacy policy.</a>
@@ -83,7 +98,6 @@
 
                             </div>
 
-                        </form>
                     </div>
 
                 </div>

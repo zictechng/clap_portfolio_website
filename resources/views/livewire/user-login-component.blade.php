@@ -49,12 +49,16 @@
                         <a href="#" class="btn btn-google google_button btn-user btn-block rounded-pill mb-3 bg-gradient-primary">
                             <i class="fab fa-google fa-fw"></i> Login with Google
                         </a>
-
+                        @if(Session::has('message'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert" role="alert">
+                                {{Session::get('message')}}
+                            </div>
+                        @endif
                         <div class="d-block has__line text-center">
                             <p class="bg-gradient-primary" style="color:white;">OR</p>
                         </div>
                         <p class="text-center"><x-jet-validation-errors class="mb-4" style="color: #D59133" /></p>
-                         
+
 
                         <form method="POST" action="{{ route('login') }}">
                             @csrf

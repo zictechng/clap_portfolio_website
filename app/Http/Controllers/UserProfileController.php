@@ -240,7 +240,6 @@ class UserProfileController extends Controller
             return back()->with('message', 'No changes were made to the web link.');
         }
 
-
         // function to update user password details
         public function passwordUpdate(Request $request)
         {

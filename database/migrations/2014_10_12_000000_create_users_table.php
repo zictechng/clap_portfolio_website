@@ -23,7 +23,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('user_type')->default('USER')->comment('ADM for admin level access, USER is for normal users/customers');
-            $table->string('acct_status')->default('active');
+            $table->string('acct_status')->nullable()->comment('active, pending, suspended, blocked, deleted');
 
             $table->string('profile_photo_path')->nullable();
             $table->timestamps();
