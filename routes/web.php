@@ -19,6 +19,9 @@ use App\Http\Livewire\User\UserProfileComponent;
 use App\Http\Livewire\User\UserStoreCredentials;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\UserProfileController;
+use App\Http\Livewire\User\EditProjectComponent;
+use App\Http\Livewire\VerifyAccount;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,11 +45,15 @@ Route::get('/testimonial', TestimonialComponent::class);
 Route::get('/project', IndividualProjectComponent::class);
 Route::get('/profile', ProfileComponent::class);
 
-Route::get('/user-login', UserLoginComponent::class)->name('user-login');;
+Route::get('/user-login', UserLoginComponent::class)->name('user-login');
 Route::get('/user-register', UserRegisterComponent::class);
+
+Route::get('/activate-account', VerifyAccount::class)->name('activate-account');
 
 Route::post('/register', [RegisteredUserController::class, 'store'])
     ->name('register');
+Route::post('/otp_activation', [VerifyAccount::class, 'ActivateAccount'])
+    ->name('otp_activation');
 Route::post('/login', [LoginAuthenticatedSessionController::class, 'store'])
 ->name('login');
 
@@ -79,6 +86,37 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
     Route::post('/user/add-project', [ProjectController::class, 'add_newProject'])->name('user.add-project');
     Route::post('/user/project-tools', [ProjectController::class, 'project_tools'])->name('user.project-tools');
     Route::post('/user/embed-media', [ProjectController::class, 'save_EmbedMedia'])->name('user.embed-media');
+
+    Route::post('/user/update-photo', [UserProfileController::class, 'updateProfilePhoto'])->name('user.update-photo');
+
+    Route::post('/user/update-banner', [UserProfileController::class, 'updateBannerImage'])->name('user.update-banner');
+
+    Route::post('/user/update-profile', [UserProfileController::class, 'updateProfile'])->name('user.update-profile');
+    Route::post('/user/update-social', [UserProfileController::class, 'updateSocial'])->name('user.update-social');
+
+    Route::post('/user/work-experience', [UserProfileController::class, 'workExperience'])->name('user.work-experience');
+
+    Route::post('/user/add-education', [UserProfileController::class, 'addEducation'])->name('user.add-education');
+
+    Route::post('/user/web-link', [UserProfileController::class, 'updateWebLink'])->name('user.web-link');
+
+    Route::post('/user/password_update', [UserProfileController::class, 'passwordUpdate'])->name('user.password_update');
+
+    Route::post('/user/update_preferences', [UserProfileController::class, 'updatePreference'])->name('user.update_preferences');
+
+    //edit project route
+    Route::get('/user/edit-project/{id}', EditProjectComponent::class)->name('user.edit-project');
+
+    Route::post('/user/update-project', [ProjectController::class, 'updateUserProject'])->name('user.update-project');
+
+    Route::post('/user/updateProject-tools', [ProjectController::class, 'updateUserProjectTools'])->name('user.updateProject-tools');
+
+    Route::post('/user/updateEmbed-media', [ProjectController::class, 'updateEmbedMedia'])->name('user.updateEmbed-media');
+
+    Route::post('/user/delete-project', [ProjectController::class, 'deleteUserProject'])->name('user.delete-project');
+
+
+
 });
 
 

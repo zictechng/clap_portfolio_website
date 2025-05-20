@@ -27,7 +27,7 @@
                                                     <path d="M9.57 5.92969L3.5 11.9997L9.57 18.0697M20.5 11.9997H3.67" stroke="#202020" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                                                   </svg>
                                             </span>
-                                            Back to my portfolio
+                                            Back to Projects
                                         </a>
                                     </div>
 
@@ -36,9 +36,9 @@
                                             <li class="tab active" data-tab="basic-info">
                                                 <a href="javascript:void(0)">
                                                     <span class="controll_icon mr-4">
-                                                        <i class="fa-solid fa-user"></i>
+                                                        <i class="fa-solid fa-folder"></i>
                                                     </span>
-                                                    Basic Information
+                                                    Project Details
                                                 </a>
                                             </li>
                                             <li class="tab " data-tab="tools-info">
@@ -52,7 +52,7 @@
                                             <li class="tab" data-tab="media">
                                                 <a href="javascript:void(0)">
                                                     <span class="controll_icon  mr-4">
-                                                        <i class="fa-solid fa-user"></i>
+                                                        <i class="fa-solid fa-tools"></i>
                                                     </span>
                                                     Embed Media
                                                 </a>
@@ -68,22 +68,18 @@
                                                 <i class="fa-solid fa-shield"></i>
                                             </span>
                                             <span class="controll_text">
-                                                Draft
+                                                {{ ucfirst($project_details->project_status) }}
                                             </span>
                                            </div>
-                                            <span class="controll_icon">
-                                                <i class="fa-solid fa-angle-down"></i>
-                                            </span>
                                         </div>
-                                        <div class="sideber_item_body">
-                                            <div class="radius_button">
-                                                <button>View project</button>
-                                            </div>
-                                            <div class="radius_button red_button">
-                                                <button>Delete project</button>
-                                            </div>
-                                        </div>
+
                                     </div>
+
+                                    <div class="sideber_item_body">
+                                        <div class="radius_button red_button">
+                                           <button data-bs-toggle="modal" data-bs-target="#ask_delete_project">Delete project</button>
+                                       </div>
+                                   </div>
 
                                 </div>
                             </div>
@@ -96,12 +92,12 @@
                                         <div class="inner_dashboard_section">
                                             <div class="dashboard_header">
                                                 <h4>
-                                                    Basic Information
+                                                    Edit Project Information
                                                 </h4>
                                             </div>
 
                                             <div class="dashboard_body">
-                                                <form action="{{ url('/user/add-project') }}" method="post" enctype="multipart/form-data" wire:submit.prevent="addProject">
+                                                <form action="{{ url('/user/update-project') }}" method="post" enctype="multipart/form-data">
                                                     @csrf
                                                     @if ($errors->any())
                                                         <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
@@ -119,22 +115,30 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                                         </div>
                                                     @endif
+                                                    @if(Session('error'))
+                                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
+                                                            {{Session('error')}}
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        </div>
+                                                    @endif
 
                                                   <div class="row">
                                                       <div class="col-lg-12 col-12">
                                                         <div class="profile_input_item">
                                                             <label for="first_name">Project title</label>
                                                             <div class="input_item">
-                                                                <input type="text" name="project_title" value="{{ old('project_title') }}" placeholder=" Project Title" wire:model='project_title'>
+                                                                <input type="text" name="project_title" value="{{old('project_title', $project_details->project_title) }}" placeholder=" Project Title" wire:model='project_title'>
                                                                 <span>150 characters remaining</span>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <input type="hidden" name="project_id" value="{{ old('id', $project_details->id)  }}" placeholder=" Project ID">
+
                                                     <div class="col-lg-12 col-12">
                                                         <div class="profile_input_item">
                                                             <label for="company">Project excerpt</label>
                                                             <div class="input_item height-100">
-                                                                <textarea name="project_concept" id="" placeholder="Project Concept" wire:model='project_concept'>{{ old('project_concept') }}</textarea>
+                                                                <textarea name="project_concept" id="" placeholder="Project Concept">{{ old('project_concept', $project_details->project_concept) }}</textarea>
                                                                 <span>150 characters remaining</span>
                                                             </div>
                                                         </div>
@@ -144,7 +148,7 @@
                                                         <div class="profile_input_item">
                                                             <label for="company">Project description</label>
                                                             <div class="input_item">
-                                                                <textarea name="project_description" id="" placeholder="Project Description" wire:model='project_description'>{{ old('project_description') }}</textarea>
+                                                                <textarea name="project_description" id="" placeholder="Project Description">{{old('project_description', $project_details->project_description ) }}</textarea>
                                                                 <span>2000 characters remaining</span>
                                                             </div>
                                                         </div>
@@ -158,27 +162,33 @@
                                                                     <input type="file" name="image" id="imageInput">
                                                                 </div>
                                                                 <div class="upload_of_content">
-                                                                    <div class="inner_upload_of_content">
-                                                                        <div class="upload_icon">
-                                                                            <span>
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                                                                                    <path d="M4.66675 17.7384V22.0413C4.66675 22.6934 4.91258 23.3187 5.35017 23.7798C5.78775 24.241 6.38124 24.5 7.00008 24.5H21.0001C21.6189 24.5 22.2124 24.241 22.65 23.7798C23.0876 23.3187 23.3334 22.6933 23.3334 22.0412V17.7384M14.0009 17.4329L14.0009 3.5M14.0009 3.5L8.66762 8.82371M14.0009 3.5L19.3343 8.82371" stroke="#252525" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                                  </svg>
-                                                                            </span>
-                                                                        </div>
-                                                                        <h4>Click to upload or drag &amp; drop &nbsp;&nbsp;</h4>
-                                                                        <p>
-                                                                            PNG, JPG, Jpeg and no larger than 5MB
-                                                                        </p>
+                                                                    @if(!empty($project_details->project_image) && file_exists(public_path('project_images/' . $project_details->project_image)))
+                                                                    <img src="{{ asset('project_images/' . $project_details->project_image) }}" alt="project Image" style="max-width: 100%; height: 150px; border-radius: 12px">
+                                                                @else
+                                                                <div class="inner_upload_of_content">
+                                                                    <div class="upload_icon">
+                                                                        <span>
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                                                                                <path d="M4.66675 17.7384V22.0413C4.66675 22.6934 4.91258 23.3187 5.35017 23.7798C5.78775 24.241 6.38124 24.5 7.00008 24.5H21.0001C21.6189 24.5 22.2124 24.241 22.65 23.7798C23.0876 23.3187 23.3334 22.6933 23.3334 22.0412V17.7384M14.0009 17.4329L14.0009 3.5M14.0009 3.5L8.66762 8.82371M14.0009 3.5L19.3343 8.82371" stroke="#252525" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                              </svg>
+                                                                        </span>
                                                                     </div>
+                                                                    <h4>Click to upload or drag &amp; drop &nbsp;&nbsp;</h4>
+                                                                    <p>
+                                                                        PNG, JPG, Jpeg and no larger than 5MB
+                                                                    </p>
                                                                 </div>
-                                                                    <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 40%; height: auto; margin-top: 10px;" />
+                                                                @endif
+
+                                                                </div>
+
                                                             </div>
+                                                            <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 40%; height: 400px; margin-top: 10px;" />
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-12 col-12">
                                                         <div class="submition_btn text-right">
-                                                            <button class="copy_button_link">Save</button>
+                                                            <button class="copy_button_link" type="submit">Update</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -191,7 +201,7 @@
 
                                 {{-- Project tools section here --}}
                                 <div id="tools-info" class="tab-content">
-                                    <form method="post" action="{{ url('/user/project-tools') }}">
+                                    <form method="post" action="{{ url('/user/updateProject-tools') }}">
                                         @csrf
                                     <div class="dash_board_card">
                                         <div class="inner_dashboard_section">
@@ -211,20 +221,6 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                                         </div>
                                                     @endif
-
-                                                    @error('project_tag')
-                                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
-                                                            {{ $message }}
-                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                        </div>
-                                                    @enderror
-
-                                                    @error('tool_data_url')
-                                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
-                                                            {{ $message }}
-                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                        </div>
-                                                    @enderror
 
                                                     @if(Session::has('message'))
                                                         <div class="alert alert-success alert-dismissible fade show" role="alert" role="alert">
@@ -247,13 +243,20 @@
                                                     @error('tool_data')
                                                         <div style="color:red;">{{ $message }}</div>
                                                     @enderror
+                                                    @php
 
+                                                        $selectedTools = collect($tools)->pluck('project_tools')->toArray();
+
+                                                        $dataUrlSource = $tools->firstWhere('data_url_source', '!=', null)->data_url_source ?? '';
+                                                    @endphp
                                                     <div class="col-lg-4">
+
+                                                        <input type="hidden" name="project_id" value="{{ old('id', $project_details->id)  }}" placeholder=" Project ID">
+
                                                         <div class="skill_tolls">
                                                             <div class="skill_tool_items">
-                                                                <input type="hidden" name="project_tag" value="{{ session('transaction_id') }}">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check1" name="tool_ms_excel" value="ms_excel" {{ old('tool_ms_excel') ? 'checked' : '' }} >
+                                                                    <input class="form-check-input" type="checkbox" id="check1" name="tool_ms_excel" value="ms_excel" {{ in_array('ms_excel', $selectedTools) ? 'checked' : '' }} style="cursor: pointer;" >
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -277,7 +280,7 @@
                                                             </div>
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check2" name="tool_python" value="python" {{ old('tool_python') ? 'checked' : '' }} >
+                                                                    <input class="form-check-input" type="checkbox" id="check2" name="tool_python" value="python" {{ in_array('python', $selectedTools) ? 'checked' : '' }} style="cursor: pointer;">
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -293,7 +296,7 @@
                                                             </div>
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check3" name="tool_sql" value="sql" {{ old('tool_sql') ? 'checked' : '' }} >
+                                                                    <input class="form-check-input" type="checkbox" id="check3" name="tool_sql" value="sql" {{ in_array('sql', $selectedTools) ? 'checked' : '' }} style="cursor: pointer;">
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -308,7 +311,7 @@
                                                             </div>
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check4" name="tool_apache" value="apache" {{ old('tool_apache') ? 'checked' : '' }} >
+                                                                    <input class="form-check-input" type="checkbox" id="check4" name="tool_apache" value="apache" {{ in_array('apache', $selectedTools) ? 'checked' : '' }} style="cursor: pointer;">
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -335,7 +338,7 @@
                                                         <div class="skill_tolls">
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check3" name="tool_tableau" value="tableau" {{ old('tool_tableau') ? 'checked' : '' }} >
+                                                                    <input class="form-check-input" type="checkbox" id="check3" name="tool_tableau" value="tableau" {{ in_array('tableau', $selectedTools) ? 'checked' : '' }} style="cursor: pointer;">
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -357,7 +360,7 @@
                                                             </div>
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check3" name="tool_power_bi" value="power bi" {{ old('tool_power_bi') ? 'checked' : '' }} >
+                                                                    <input class="form-check-input" type="checkbox" id="check3" name="tool_power_bi" value="power bi" {{ in_array('power bi', $selectedTools) ? 'checked' : '' }} style="cursor: pointer;">
                                                                     <label class="form-check-label">
                                                                         <span class="tool_icons">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -374,7 +377,7 @@
 
                                                             <div class="skill_tool_items">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="check5" name="tool_other" value="other" {{ old('tool_other') ? 'checked' : '' }} >
+                                                                    <input class="form-check-input" type="checkbox" id="check5" name="tool_other" value="other" {{ in_array('other', $selectedTools) ? 'checked' : '' }} style="cursor: pointer;">
                                                                     <label class="form-check-label">
 
                                                                         <span class="tool_check_label">
@@ -402,7 +405,7 @@
                                                             <label for="first_name">Data Source URL</label>
                                                             <div class="input_item">
                                                                 <input type="text" name="tool_data_url"
-                                                                value="{{ old('tool_data_url') }}"
+                                                                value="{{ $dataUrlSource }}"
                                                                 placeholder="https://data.com">
                                                             </div>
                                                         </div>
@@ -412,7 +415,7 @@
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="submition_btn text-right">
-                                                <button class="copy_button_link" type="submit">Save</button>
+                                                <button class="copy_button_link" type="submit">Update</button>
                                             </div>
                                         </div>
                                     </div>
@@ -444,23 +447,21 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                                         </div>
                                                     @endif
-
-                                                <p>
-                                                    Which tools or languages<br>were used in this project
-                                                </p>
                                             </div>
 
                                             <div class="dashboard_body mt-4">
-                                            <form method="post" action="{{ url('/user/embed-media') }}">
+                                            <form method="post" action="{{ url('/user/updateEmbed-media') }}">
                                                 @csrf
                                             <input type="hidden" name="project_tag" value="{{ session('transaction_id') }}">
 
                                                 <div class="row">
+                                                    <input type="hidden" name="project_id" value="{{ old('id', $project_details->id)  }}" placeholder=" Project ID">
+
                                                     <div class="col-lg-12">
                                                         <div class="profile_input_item">
                                                             <label for="md_name">Media name</label>
                                                             <div class="input_item">
-                                                                <input type="text" value="{{ old('media_name') }}" name="media_name" placeholder="Enter media name" class="mb-2">
+                                                                <input type="text" value="{{$embed_links->embed_media_name ?? 'N/A' }}" name="media_name" placeholder="Enter media name" class="mb-2">
                                                                 <span class="">This is for all your embedded content</span>
                                                             </div>
                                                         </div>
@@ -470,8 +471,8 @@
                                                             <label for="Occupation">Embed type</label>
                                                             <div class="input_item">
                                                                 <select name="embed_type" id=""  class="form-select">
-                                                                    <option value="{{ old('embed_type') }}">
-                                                                        Choose option
+                                                                    <option value="{{ $embed_links->embed_media_type ?? ''}}">
+                                                                        {{ $embed_links->embed_media_type ?? 'Choose type'}}
                                                                     </option>
                                                                     <option value="Power BI">Power BI</option>
                                                                     <option value="Tableau">Tableau</option>
@@ -488,8 +489,8 @@
                                                             <label for="Occupation">Aspect Ratio</label>
                                                             <div class="input_item">
                                                                 <select name="embed_ratio" id="" class="form-select">
-                                                                    <option value="{{ old('embed_ratio') }}">
-                                                                        Choose option
+                                                                    <option value="{{ $embed_links->embed_media_ratio ?? ''}}">
+                                                                        {{ $embed_links->embed_media_ratio ?? 'Choopse Aspect Ratio'}}
                                                                     </option>
                                                                     <option value="Horizontal 1:1">Horizontal 1:1</option>
                                                                     <option value="Horizontal 2:1">Horizontal 2:1</option>
@@ -503,7 +504,7 @@
 
                                                     <div class="col-lg-12">
                                                         <div class="submition_btn text-right">
-                                                            <button type="submit" class="copy_button_link">Save</button>
+                                                            <button type="submit" class="copy_button_link" type="submit">Update</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -522,7 +523,7 @@
             </div>
 
 
-            <div class="modal" id="ask_delete_education">
+            <div class="modal" id="ask_delete_project">
                 <div class="modal-dialog modal-lg">
                   <div class="modal-content">
 
@@ -536,6 +537,9 @@
                     <div class="modal-body">
                         <div class="dashboard_body popup_body">
                             <div class="row">
+                                <form method="post" action="{{ url('/user/delete-project') }}">
+                                    @csrf
+                                <input type="hidden" name="project_id" value="{{ old('id', $project_details->id)  }}" placeholder=" Project ID">
                                 <div class="col-lg-12 col-12">
                                     <div class="profile_delete_item">
                                         <div class="alert_icons">
@@ -553,16 +557,17 @@
                                                   </svg>
                                             </span>
                                         </div>
-                                        <h4>Delete Education</h4>
-                                        <p>Are you sure you want to delete this Educational qualification? This action cannot be undone</p>
+                                        <h4>Delete Project</h4>
+                                        <p>Are you sure you want to delete this Project? This action cannot be undone</p>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 col-12">
                                     <div class="submition_btn align-items-center btn_center">
-                                        <button class="copy_button_link">No, Return</button>
-                                        <button class="copy_button_link delete_buttons">Yes, Delete</button>
+                                        <button class="copy_button_link" data-bs-dismiss="modal">No, Return</button>
+                                        <button class="copy_button_link delete_buttons" type="submit">Yes, Delete</button>
                                     </div>
                                 </div>
+                                </form>
                             </div>
                         </div>
                     </div>

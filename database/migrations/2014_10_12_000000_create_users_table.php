@@ -23,9 +23,9 @@ return new class extends Migration
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('user_type')->default('USER')->comment('ADM for admin level access, USER is for normal users/customers');
-            $table->string('acct_status')->default('pending');
+            $table->string('acct_status')->default('active');
 
-            $table->string('profile_photo_path', 2048)->nullable();
+            $table->string('profile_photo_path')->nullable();
             $table->timestamps();
         });
     }

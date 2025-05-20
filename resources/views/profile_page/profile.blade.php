@@ -1,3 +1,5 @@
+@php use Illuminate\Support\Str; @endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,18 +83,7 @@
                                         <i class="fa-solid fa-angle-down"></i>
                                     </span>
                                 </div> --}}
-                                <div class="sideber_item_body">
-                                    <ul class="tabs">
-                                        <li class="tab" data-tab="security">
-                                            <a href="javascript:void(0)">
-                                                <span class="controll_icon">
-                                                    <i class="fa-solid fa-shield"></i>
-                                                </span>
-                                                Security
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
+
                             </div>
                             <div class="siedeber_item">
                                 {{-- <div class="side_ber_item_header">
@@ -139,15 +130,21 @@
                                     <div class="profile_image_controller d-flex align-items-center gap-3 justify-content-between">
                                         <div class="combo mb-4 d-flex align-items-center gap-2">
                                             <div class="profile_images">
-                                                <img src="{{asset('dashboardAsset/images/profile_pics.png')}}" alt="" srcset="">
+                                                @if(!empty($user_details->profile_url) && file_exists(public_path('profile_images/' . $user_details->profile_url)))
+                                                    <img src="{{ asset('profile_images/' . $user_details->profile_url) }}" alt="Profile Image" style="max-width: 80px; height: 80px;" class="rounded-circle object-fit: cover;">
+                                                @else
+                                                    <img src="{{ asset('dashboardAsset/images/profile_pics.png') }}" alt="Default Image" style="max-width: 100%; height: auto;">
+                                                @endif
+
+                                                {{-- <img src="{{asset('dashboardAsset/images/profile_pics.png')}}" alt="" srcset=""> --}}
                                             </div>
                                             <div class="profile_image_content">
                                                 <h4>My Profile</h4>
-                                                <p>Photo must be PNG or JPG and no larger than 2MB</p>
+
                                             </div>
                                         </div>
                                         <div class="image_upload_button">
-                                            <button type="button" class="theme_border_btns">Change profile photo</button>
+                                            <a href="/user/edit-profile" type="button" class="theme_border_btns">Manage profile</a>
                                         </div>
                                     </div>
                                     <div class="dashboard_body">
@@ -156,7 +153,8 @@
                                                 <div class="profile_input_item">
                                                     <label for="first_name">First name</label>
                                                     <div class="input_item">
-                                                        <input type="text" placeholder="First Name">
+                                                        <input type="text"
+                                                        value="{{ $user_details->name }}" placeholder="First Name" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -164,7 +162,8 @@
                                                 <div class="profile_input_item">
                                                     <label for="first_name">Last name</label>
                                                     <div class="input_item">
-                                                        <input type="text" placeholder="Last Name">
+                                                        <input type="text"
+                                                        value="{{ $user_details->lname }}"  placeholder="Last Name" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -172,7 +171,8 @@
                                                 <div class="profile_input_item">
                                                     <label for="first_name">Profile URL</label>
                                                     <div class="input_item">
-                                                        <input type="text" placeholder="Profile URL">
+                                                        <input type="text"
+                                                        value="{{ $user_details->id }}" placeholder="Profile URL" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -186,7 +186,8 @@
                                                 <div class="profile_input_item">
                                                     <label for="first_name">Email address</label>
                                                     <div class="input_item">
-                                                        <input type="text" placeholder="Email address">
+                                                        <input type="text"
+                                                        value="{{ $user_details->email }}"  placeholder="Email address" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -194,7 +195,8 @@
                                                 <div class="profile_input_item">
                                                     <label for="Occupation">Occupation</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="Occupation">
+                                                        <input type="text"
+                                                        value="{{ $user_details->user_occupation }}"  name="Occupation" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -202,7 +204,8 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Company</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="company">
+                                                        <input type="text"
+                                                        value="{{ $user_details->user_company }}"  name="company" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -210,7 +213,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Biography</label>
                                                     <div class="input_item">
-                                                        <textarea name="" id=""></textarea>
+                                                        <textarea name="" id="" readonly>{{ Str::limit($user_details->user_biography, 1500) }} </textarea>
                                                         <span>1500 characters remaining</span>
                                                     </div>
                                                 </div>
@@ -231,7 +234,7 @@
                                             Banner
                                         </h4>
                                         <p>
-                                            Upload a banner, this improves the appearance of your profile
+                                            Upload a banner, this improves the appearance of your project profile
                                         </p>
                                     </div>
                                     <div class="file_upload_areas">
@@ -240,17 +243,15 @@
                                         </div>
                                         <div class="upload_of_content">
                                             <div class="inner_upload_of_content">
-                                                <div class="upload_icon">
-                                                    <span>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                                                            <path d="M4.66675 17.7384V22.0413C4.66675 22.6934 4.91258 23.3187 5.35017 23.7798C5.78775 24.241 6.38124 24.5 7.00008 24.5H21.0001C21.6189 24.5 22.2124 24.241 22.65 23.7798C23.0876 23.3187 23.3334 22.6933 23.3334 22.0412V17.7384M14.0009 17.4329L14.0009 3.5M14.0009 3.5L8.66762 8.82371M14.0009 3.5L19.3343 8.82371" stroke="#252525" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                          </svg>
-                                                    </span>
-                                                </div>
-                                                <h4>Click to upload or drag & drop</h4>
-                                                <p>
-                                                    PNG, JPG, Jpeg and no larger than 2MB
-                                                </p>
+                                                @if(!empty($user_details->user_profile_banner) && file_exists(public_path('profile_images/' . $user_details->user_profile_banner)))
+                                                    <img src="{{ asset('profile_images/' . $user_details->user_profile_banner) }}" alt="project Image" style="max-width: 90%; height: auto; border-radius: 12px">
+                                                @else
+                                                    <h4>No Banner uploaded</h4>
+                                                    <p>
+                                                        Go to manage profile and upload profile banner
+                                                    </p>
+                                                @endif
+
                                             </div>
                                         </div>
 
@@ -278,7 +279,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="Linkedin">Linkedin</label>
                                                     <div class="input_item">
-                                                        <input type="text" placeholder="">
+                                                        <input type="text" value="{{ $social_details->social_linkedin }}" placeholder="" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -286,7 +287,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="Occupation">Github</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="">
+                                                        <input type="text" value="{{ $social_details->social_github }}" readonly placeholder="Github">
                                                     </div>
                                                 </div>
                                             </div>
@@ -294,7 +295,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Company</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="company">
+                                                        <input type="text" value="{{ $social_details->social_company }}" placeholder="Company" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -302,15 +303,15 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Youtube</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="company">
+                                                        <input type="text" value="{{ $social_details->social_youtube }}" placeholder="Youtube" readonly>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-12">
+                                            {{-- <div class="col-lg-12">
                                                 <div class="submition_btn text-right">
                                                     <button class="copy_button_link">Save</button>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                     </div>
 
@@ -327,36 +328,34 @@
                                             Work Experience
                                         </h4>
                                         <p>
-                                            Add your work history to your profile here
+                                            Overview of your work experience in your profile
                                         </p>
                                     </div>
                                     <div class="dashboard_body">
+                                        @foreach ($work_experience as $work_experiences)
                                         <div class="add_exp_btn">
                                             <div class="exp_items">
                                                 <div class="exp_items_header d-flex align-items-center justify-content-space-between">
-                                                    <h4>Data Analyst</h4>
-                                                    <div class="tool_exp_areas">
-                                                        <span class="edit_icon" style="cursor: pointer;">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                                                                <path d="M13.8 20.0485H19.8M4.20007 20.0485L8.56606 19.1688C8.79784 19.1221 9.01065 19.008 9.17779 18.8407L18.9515 9.06168C19.4201 8.59283 19.4197 7.83284 18.9508 7.36438L16.8803 5.2963C16.4115 4.82804 15.6519 4.82836 15.1835 5.29702L5.40884 15.0771C5.24202 15.244 5.12812 15.4564 5.08138 15.6877L4.20007 20.0485Z" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                              </svg>
-                                                        </span>
-                                                        <span class="delete_icon" data-bs-toggle="modal" data-bs-target="#ask_delete"
-                                                        style="cursor: pointer;">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                                                                <path d="M20.5 6.5H3.5M18.833 9L18.373 15.9C18.196 18.554 18.108 19.881 17.243 20.69C16.378 21.499 15.047 21.5 12.387 21.5H11.613C8.953 21.5 7.622 21.5 6.757 20.69C5.892 19.881 5.803 18.554 5.627 15.9L5.167 9" stroke="#202020" stroke-width="1.5" stroke-linecap="round"/>
-                                                                <path d="M6.5 6.5H6.61C7.01245 6.48972 7.40242 6.35822 7.72892 6.12271C8.05543 5.8872 8.30325 5.55864 8.44 5.18L8.474 5.077L8.571 4.786C8.654 4.537 8.696 4.413 8.751 4.307C8.85921 4.09939 9.01451 3.91999 9.20448 3.78316C9.39444 3.64633 9.6138 3.55586 9.845 3.519C9.962 3.5 10.093 3.5 10.355 3.5H13.645C13.907 3.5 14.038 3.5 14.155 3.519C14.3862 3.55586 14.6056 3.64633 14.7955 3.78316C14.9855 3.91999 15.1408 4.09939 15.249 4.307C15.304 4.413 15.346 4.537 15.429 4.786L15.526 5.077C15.6527 5.49827 15.9148 5.86601 16.2717 6.12326C16.6285 6.38051 17.0603 6.51293 17.5 6.5" stroke="#202020" stroke-width="1.5"/>
-                                                              </svg>
-                                                        </span>
-                                                    </div>
+                                                    <h4>{{ $work_experiences->job_title }}</h4>
+
                                                 </div>
                                                 <div class="inner_wrapers_items">
-                                                    <h4>Clap Academy</h4>
-                                                    <h4>21 Feb - 30th Nov 2024</h4>
+                                                    <h4>{{ $work_experiences->job_organization }}</h4>
+                                                    <h4>
+                                                        {{ \Carbon\Carbon::parse($work_experiences->job_start_date)->format('d M, Y') }}
+                                                            -
+                                                            @if ($work_experiences->job_end_date)
+                                                                {{ \Carbon\Carbon::parse($work_experiences->job_end_date)->format('d M, Y') }}
+                                                            @else
+                                                                Till date
+                                                            @endif
+                                                        </h4>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="add_work_exp_btn">
+                                        @endforeach
+
+                                        {{-- <div class="add_work_exp_btn">
                                             <button data-bs-toggle="modal" data-bs-target="#myModal">
                                                 <span>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -365,11 +364,12 @@
                                                 </span>
                                                 Add Work Experience
                                             </button>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         {{-- Add Eduction here --}}
                         <div id="education" class="tab-content">
                             <div class="dash_board_card">
@@ -383,44 +383,23 @@
                                         </p>
                                     </div>
                                     <div class="dashboard_body">
+                                        @foreach ($user_education as $user_educations )
                                         <div class="add_exp_btn">
+
                                             <div class="exp_items">
                                                 <div class="exp_items_header d-flex align-items-center justify-content-space-between">
-                                                    <h4>Data Analyst</h4>
-                                                    <div class="tool_exp_areas">
-                                                        <span class="edit_icon" data-bs-toggle="modal" data-bs-target="#education_modal"
-                                                        style="cursor: pointer;">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                                                                <path d="M13.8 20.0485H19.8M4.20007 20.0485L8.56606 19.1688C8.79784 19.1221 9.01065 19.008 9.17779 18.8407L18.9515 9.06168C19.4201 8.59283 19.4197 7.83284 18.9508 7.36438L16.8803 5.2963C16.4115 4.82804 15.6519 4.82836 15.1835 5.29702L5.40884 15.0771C5.24202 15.244 5.12812 15.4564 5.08138 15.6877L4.20007 20.0485Z" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                              </svg>
-                                                        </span>
+                                                    <h4>{{ $user_educations->degree_name }}</h4>
 
-                                                        <span class="delete_icon" data-bs-toggle="modal" data-bs-target="#ask_delete_education"
-                                                        style="cursor: pointer;">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                                                                <path d="M20.5 6.5H3.5M18.833 9L18.373 15.9C18.196 18.554 18.108 19.881 17.243 20.69C16.378 21.499 15.047 21.5 12.387 21.5H11.613C8.953 21.5 7.622 21.5 6.757 20.69C5.892 19.881 5.803 18.554 5.627 15.9L5.167 9" stroke="#202020" stroke-width="1.5" stroke-linecap="round"/>
-                                                                <path d="M6.5 6.5H6.61C7.01245 6.48972 7.40242 6.35822 7.72892 6.12271C8.05543 5.8872 8.30325 5.55864 8.44 5.18L8.474 5.077L8.571 4.786C8.654 4.537 8.696 4.413 8.751 4.307C8.85921 4.09939 9.01451 3.91999 9.20448 3.78316C9.39444 3.64633 9.6138 3.55586 9.845 3.519C9.962 3.5 10.093 3.5 10.355 3.5H13.645C13.907 3.5 14.038 3.5 14.155 3.519C14.3862 3.55586 14.6056 3.64633 14.7955 3.78316C14.9855 3.91999 15.1408 4.09939 15.249 4.307C15.304 4.413 15.346 4.537 15.429 4.786L15.526 5.077C15.6527 5.49827 15.9148 5.86601 16.2717 6.12326C16.6285 6.38051 17.0603 6.51293 17.5 6.5" stroke="#202020" stroke-width="1.5"/>
-                                                              </svg>
-                                                        </span>
-                                                    </div>
                                                 </div>
                                                 <div class="inner_wrapers_items">
-                                                    <h4>Bsc. Statistics </h4>
-                                                    <h4>University of Illinois</h4>
-                                                    <h4>21 Feb 2020 - 30th Nov 2024</h4>
+                                                    {{-- <h4><strong>{{ $user_educations->degree_name }} </strong></h4> --}}
+                                                    <h4>{{ $user_educations->institution_name }}</h4>
+                                                    <h4>{{ \Carbon\Carbon::parse($user_educations->start_date)->format('d M, Y') }} - {{ \Carbon\Carbon::parse($user_educations->end_date)->format('d M, Y') }}</h4>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="add_work_exp_btn">
-                                            <button data-bs-toggle="modal" data-bs-target="#education_modal">
-                                                <span>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                        <path d="M6 12H18M12 18V6" stroke="#155CC8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                                      </svg>
-                                                </span>
-                                                Add education
-                                            </button>
-                                        </div>
+                                        @endforeach
+
                                     </div>
                                 </div>
                             </div>
@@ -443,7 +422,7 @@
                                                 <div class="profile_input_item">
 
                                                     <div class="input_item">
-                                                        <input type="text" placeholder="Enter your website URL ">
+                                                        <input type="text" value="{{ $user_details->web_link }}" placeholder="Enter your website URL " readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -538,7 +517,7 @@
                                             <div class="col-lg-6 col-md-6 col-12">
                                                 <div class="profile_input_item height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value="yes" checked
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value="yes" {{ $preference->like_notify ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch">
                                                             <h4>Likes</h4>
@@ -548,7 +527,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch2" name="darkmode" value="yes"
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch2" name="darkmode" value="yes" {{ $preference->comment_notify ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch2">
                                                             <h4>Comments</h4>
@@ -558,7 +537,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch3" name="darkmode" value="yes"
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch3" name="darkmode" value="yes" {{ $preference->share_notify ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch3">
                                                             <h4>Share</h4>
@@ -580,48 +559,48 @@
                                                         Show social links
                                                     </h4>
                                                     <p>
-                                                        Change your email address and password
+                                                        Manage the visibility of your social links and others in your profile
                                                     </p>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-12">
                                                 <div class="profile_input_item height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c1s" name="darkmode" value="yes" checked
+                                                        <input class="form-check-input" type="checkbox" id="c1s" name="darkmode" value="yes" {{ $preference->show_social_link ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="c1s">
                                                             <h4>Show social links</h4>
-                                                            <p>Change your email address and password</p>
+                                                            <p>When turn on, this will show your social links in your profile</p>
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c2s" name="darkmode" value="yes"
+                                                        <input class="form-check-input" type="checkbox" id="c2s" name="darkmode" value="yes" {{ $preference->show_education ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="c2s">
                                                             <h4>Show education</h4>
-                                                            <p>Change your email address and password</p>
+                                                            <p>If turn on, it will show your education in your profile</p>
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c3s" name="darkmode" value="yes"
+                                                        <input class="form-check-input" type="checkbox" id="c3s" name="darkmode" value="yes" {{ $preference->show_work_experience ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="c3s">
                                                             <h4>Show work experience</h4>
-                                                            <p>Change your email address and password</p>
+                                                            <p>When turn on this will show your work experience in your profile</p>
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c4s" name="darkmode" value="yes"
+                                                        <input class="form-check-input" type="checkbox" id="c4s" name="darkmode" value="yes" {{ $preference->show_other_link ? 'checked' : '' }}
                                                         style="cursor: pointer;">
                                                         <label class="form-check-label" for="c4s">
                                                             <h4>Show additional links</h4>
-                                                            <p>Change your email address and password</p>
+                                                            <p>Display other link in your profile</p>
                                                         </label>
                                                     </div>
                                                 </div>

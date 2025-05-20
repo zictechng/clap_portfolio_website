@@ -33,7 +33,7 @@ class LoginAuthenticatedSessionController extends Controller
         $user = Auth::user();
 
         // If account is pending
-        if ($user->acct_status === 'pending') {
+        if ($user->acct_status == 'pending') {
             Auth::logout(); // Log the user out
             // Redirect to an OTP verification page or custom page
             //return redirect('/otp-verification')->with('message', 'Your account is pending activation. Please verify your OTP.');
@@ -43,7 +43,7 @@ class LoginAuthenticatedSessionController extends Controller
         }
 
         // If account is inactive or blocked
-        if ($user->acct_status !== 'active') {
+        if ($user->acct_status != 'active') {
             Auth::logout(); // Log the user out
             return redirect('/use-login')->withErrors(['email' => 'Your account is not active or has been blocked.']);
         }

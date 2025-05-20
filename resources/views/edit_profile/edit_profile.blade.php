@@ -126,28 +126,64 @@
                                         <h4>
                                             Basic Information
                                         </h4>
+                                        {{-- <p>
+                                            Add links to your professional social account profiles.
+                                        </p> --}}
+                                        <br/>
                                     </div>
+
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
+                                            <ul class="mb-0">
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    @endif
+                                    @if(Session::has('error'))
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
+                                            {{Session::get('error')}}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    @endif
+                                    @if(Session::has('message'))
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" role="alert">
+                                            {{Session::get('message')}}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    @endif
+
                                     <div class="profile_image_controller d-flex align-items-center gap-3 justify-content-between">
                                         <div class="combo mb-4 d-flex align-items-center gap-2">
                                             <div class="profile_images">
-                                                <img src="{{asset('dashboardAsset/images/profile_pics.png')}}" alt="" srcset="">
+                                                @if(!empty($user_details->profile_url) && file_exists(public_path('profile_images/' . $user_details->profile_url)))
+                                                    <img src="{{ asset('profile_images/' . $user_details->profile_url) }}" alt="Profile Image" style="max-width: 88px; height: 88px;" class="rounded-circle object-fit: cover;" >
+                                                @else
+                                                    <img src="{{ asset('dashboardAsset/images/profile_pics.png') }}" alt="Default Image" style="max-width: 100%; height: auto;">
+                                                @endif
                                             </div>
                                             <div class="profile_image_content">
-                                                <h4>My Profile</h4>
-                                                <p>Photo must be PNG or JPG and no larger than 2MB</p>
+                                                <h4>Profile Photo</h4>
+                                                <p>Click through the menu tabs at left hand side to manage your account details</p>
                                             </div>
                                         </div>
                                         <div class="image_upload_button">
-                                            <button type="button" class="theme_border_btns">Change profile photo</button>
+                                            <button data-bs-toggle="modal" data-bs-target="#imageModal" type="button" class="theme_border_btns">Change profile photo</button>
                                         </div>
+
                                     </div>
                                     <div class="dashboard_body">
+                                        <form method="post" action="{{ url('/user/update-profile') }}" enctype="multipart/form-data">
+                                            @csrf
                                         <div class="row">
                                             <div class="col-lg-6  col-12">
                                                 <div class="profile_input_item">
                                                     <label for="first_name">First name</label>
                                                     <div class="input_item">
-                                                        <input type="text" placeholder="First Name">
+                                                        <input type="text" name="name"
+                                                        value="{{ $user_details->name }}" placeholder="First Name">
                                                     </div>
                                                 </div>
                                             </div>
@@ -155,29 +191,17 @@
                                                 <div class="profile_input_item">
                                                     <label for="first_name">Last name</label>
                                                     <div class="input_item">
-                                                        <input type="text" placeholder="Last Name">
+                                                        <input type="text" name="other_name" value="{{ $user_details->lname }}" placeholder="Last Name">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-9 col-8  col-md-6 col-12">
-                                                <div class="profile_input_item">
-                                                    <label for="first_name">Profile URL</label>
-                                                    <div class="input_item">
-                                                        <input type="text" placeholder="Profile URL">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3 col-md-6 col-12">
-                                                <div class="profile_input_item">
-                                                    <label for="first_name"></label>
-                                                    <button class="copy_button_link">Copy Link</button>
-                                                </div>
-                                            </div>
+
                                             <div class="col-lg-12 col-12">
                                                 <div class="profile_input_item">
                                                     <label for="first_name">Email address</label>
                                                     <div class="input_item">
-                                                        <input type="text" placeholder="Email address">
+                                                        <input type="text" name="email"
+                                                        value="{{ $user_details->email }}" placeholder="Email address" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -185,7 +209,8 @@
                                                 <div class="profile_input_item">
                                                     <label for="Occupation">Occupation</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="Occupation">
+                                                        <input type="text" name="occupation"
+                                                        value="{{ $user_details->user_occupation }}" name="Occupation">
                                                     </div>
                                                 </div>
                                             </div>
@@ -193,7 +218,7 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Company</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="company">
+                                                        <input type="text" value="{{ $user_details->user_company }}" name="company">
                                                     </div>
                                                 </div>
                                             </div>
@@ -201,19 +226,31 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Biography</label>
                                                     <div class="input_item">
-                                                        <textarea name="" id=""></textarea>
+                                                        <textarea name="bio" id="">
+                                                            {{$user_details->user_biography}}
+                                                        </textarea>
                                                         <span>1500 characters remaining</span>
                                                     </div>
+                                                <div class="col-lg-12">
+                                                    <div class="submition_btn text-right">
+                                                        <button class="copy_button_link" type="submit">Update Profile</button>
+                                                    </div>
+                                                    </div>
                                                 </div>
+
                                             </div>
                                         </div>
+                                        </form>
                                     </div>
-        
+
                                 </div>
                             </div>
                         </div>
+
                         <div id="banner" class="tab-content">
                             <div class="dash_board_card">
+                                <form method="post" action="{{ url('/user/update-banner') }}" enctype="multipart/form-data">
+                                    @csrf
                                 <div class="inner_dashboard_section">
                                     <div class="dashboard_header">
                                         <h4>
@@ -225,29 +262,46 @@
                                     </div>
                                     <div class="file_upload_areas">
                                         <div class="file_upload_area">
-                                            <input type="file" name="" id="">
+                                            <input type="file" name="banner_image" id="imageInput">
                                         </div>
-                                        <div class="upload_of_content">
-                                            <div class="inner_upload_of_content">
-                                                <div class="upload_icon">
-                                                    <span>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                                                            <path d="M4.66675 17.7384V22.0413C4.66675 22.6934 4.91258 23.3187 5.35017 23.7798C5.78775 24.241 6.38124 24.5 7.00008 24.5H21.0001C21.6189 24.5 22.2124 24.241 22.65 23.7798C23.0876 23.3187 23.3334 22.6933 23.3334 22.0412V17.7384M14.0009 17.4329L14.0009 3.5M14.0009 3.5L8.66762 8.82371M14.0009 3.5L19.3343 8.82371" stroke="#252525" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                          </svg>
-                                                    </span>
+                                            @if(!empty($user_details->user_profile_banner) && file_exists(public_path('profile_images/' . $user_details->user_profile_banner)))
+                                            <img src="{{ asset('profile_images/' . $user_details->user_profile_banner) }}" alt="banner Image" style="max-width: 90%; height: auto; border-radius: 12px" class="object-fit: cover;" >
+                                            @else
+                                                <div class="upload_of_content">
+                                                    <div class="inner_upload_of_content">
+                                                        <div class="upload_icon">
+                                                            <span>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                                                                    <path d="M4.66675 17.7384V22.0413C4.66675 22.6934 4.91258 23.3187 5.35017 23.7798C5.78775 24.241 6.38124 24.5 7.00008 24.5H21.0001C21.6189 24.5 22.2124 24.241 22.65 23.7798C23.0876 23.3187 23.3334 22.6933 23.3334 22.0412V17.7384M14.0009 17.4329L14.0009 3.5M14.0009 3.5L8.66762 8.82371M14.0009 3.5L19.3343 8.82371" stroke="#252525" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                                  </svg>
+                                                            </span>
+                                                        </div>
+                                                        <h4>Click to upload or drag & drop</h4>
+                                                        <p>
+                                                            PNG, JPG, Jpeg and no larger than 2MB
+                                                        </p>
+                                                    </div>
+
                                                 </div>
-                                                <h4>Click to upload or drag & drop</h4>
-                                                <p>
-                                                    PNG, JPG, Jpeg and no larger than 2MB
-                                                </p>
-                                            </div>
-                                        </div>
+                                            @endif
 
                                     </div>
-        
+                                    <div class="col-lg-12">
+                                        <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 90%; height: auto; margin-top: 10px; border-radius: 12px" />
+                                    </div>
+
+                                    <br/>
+                                    <div class="col-lg-12">
+                                        <div class="submition_btn text-right">
+                                            <button class="copy_button_link" type="submit">Upload</button>
+                                        </div>
+                                    </div>
                                 </div>
+                                </form>
                             </div>
                         </div>
+                        <!-------------------------------Social Links---------------------------------------->
+
                         <div id="social" class="tab-content">
                             <div class="dash_board_card">
                                 <div class="inner_dashboard_section">
@@ -259,15 +313,16 @@
                                             Add links to your professional social account profiles.
                                         </p>
                                     </div>
-                                    
+
                                     <div class="dashboard_body mt-4">
+                                        <form method="post" action="{{ url('/user/update-social') }}" enctype="multipart/form-data">
+                                            @csrf
                                         <div class="row">
-                                            
                                             <div class="col-lg-12">
                                                 <div class="profile_input_item">
                                                     <label for="Linkedin">Linkedin</label>
                                                     <div class="input_item">
-                                                        <input type="text" placeholder="">
+                                                        <input type="text" name="linkedin" value="{{ $social_details->social_linkedin }}" placeholder="Linkedin URL">
                                                     </div>
                                                 </div>
                                             </div>
@@ -275,7 +330,8 @@
                                                 <div class="profile_input_item">
                                                     <label for="Occupation">Github</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="">
+                                                        <input type="text" name="github"
+                                                        value="{{ $social_details->social_github }}" placeholder="Github URL">
                                                     </div>
                                                 </div>
                                             </div>
@@ -283,7 +339,8 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Company</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="company">
+                                                        <input type="text" name="company"
+                                                        value="{{ $social_details->social_company }}" placeholder="Company">
                                                     </div>
                                                 </div>
                                             </div>
@@ -291,21 +348,24 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Youtube</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="company">
+                                                        <input type="text" name="youtube"
+                                                        value="{{ $social_details->social_youtube }}" placeholder="Youtube URL">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-12">
                                                 <div class="submition_btn text-right">
-                                                    <button class="copy_button_link">Save</button>
+                                                    <button class="copy_button_link" type="submit">Update</button>
                                                 </div>
                                             </div>
                                         </div>
+                                        </form>
                                     </div>
-        
+
                                 </div>
                             </div>
                         </div>
+
                         <div id="work-experience" class="tab-content">
                             <div class="dash_board_card">
                                 <div class="inner_dashboard_section">
@@ -318,10 +378,11 @@
                                         </p>
                                     </div>
                                     <div class="dashboard_body">
+                                        @foreach ($work_experience as $work_experiences)
                                         <div class="add_exp_btn">
                                             <div class="exp_items">
                                                 <div class="exp_items_header d-flex align-items-center justify-content-space-between">
-                                                    <h4>Data Analyst</h4>
+                                                    <h4>{{ $work_experiences->job_title }}</h4>
                                                     <div class="tool_exp_areas">
                                                         <span class="edit_icon">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
@@ -337,13 +398,24 @@
                                                     </div>
                                                 </div>
                                                 <div class="inner_wrapers_items">
-                                                    <h4>Clap Academy</h4>
-                                                    <h4>21 Feb - 30th Nov 2024</h4>
+                                                    <h4>{{ $work_experiences->job_organization }}</h4>
+                                                    <h4>
+                                                        {{ \Carbon\Carbon::parse($work_experiences->job_start_date)->format('d M, Y') }}
+                                                            -
+                                                            @if ($work_experiences->job_end_date)
+                                                                {{ \Carbon\Carbon::parse($work_experiences->job_end_date)->format('d M, Y') }}
+                                                            @else
+                                                                Till date
+                                                            @endif
+                                                        </h4>
                                                 </div>
                                             </div>
                                         </div>
+                                        @endforeach
+
+
                                         <div class="add_work_exp_btn">
-                                            <button data-bs-toggle="modal" data-bs-target="#myModal">
+                                            <button data-bs-toggle="modal" data-bs-target="#work_experience_modal">
                                                 <span>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                                         <path d="M6 12H18M12 18V6" stroke="#155CC8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -356,6 +428,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div id="education" class="tab-content">
                             <div class="dash_board_card">
                                 <div class="inner_dashboard_section">
@@ -368,10 +441,12 @@
                                         </p>
                                     </div>
                                     <div class="dashboard_body">
+                                        @foreach ($user_education as $user_educations )
                                         <div class="add_exp_btn">
+
                                             <div class="exp_items">
                                                 <div class="exp_items_header d-flex align-items-center justify-content-space-between">
-                                                    <h4>Data Analyst</h4>
+                                                    <h4>{{ $user_educations->degree_name }}</h4>
                                                     <div class="tool_exp_areas">
                                                         <span class="edit_icon" data-bs-toggle="modal" data-bs-target="#education_modal">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
@@ -387,12 +462,14 @@
                                                     </div>
                                                 </div>
                                                 <div class="inner_wrapers_items">
-                                                    <h4>Bsc. Statistics </h4>
-                                                    <h4>University of Illinois</h4>
-                                                    <h4>21 Feb 2020 - 30th Nov 2024</h4>
+                                                    {{-- <h4><strong>{{ $user_educations->degree_name }} </strong></h4> --}}
+                                                    <h4>{{ $user_educations->institution_name }}</h4>
+                                                    <h4>{{ \Carbon\Carbon::parse($user_educations->start_date)->format('d M, Y') }} - {{ \Carbon\Carbon::parse($user_educations->end_date)->format('d M, Y') }}</h4>
                                                 </div>
                                             </div>
                                         </div>
+                                        @endforeach
+
                                         <div class="add_work_exp_btn">
                                             <button data-bs-toggle="modal" data-bs-target="#education_modal">
                                                 <span>
@@ -407,6 +484,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div id="links" class="tab-content">
                             <div class="dash_board_card">
                                 <div class="dashboard_header mb-4">
@@ -417,25 +495,30 @@
                                 </div>
                                 <div class="inner_dashboard_section">
                                     <div class="dashboard_body">
+                                        <form method="post" action="{{ url('/user/web-link') }}">
                                         <div class="row">
-                                            
-                                            <div class="col-lg-9 col-8  col-md-6 col-12">
+
+                                                @csrf
+                                            <div class="col-lg-8 col-8  col-md-6 col-12">
                                                 <div class="profile_input_item">
-                                                
+
                                                     <div class="input_item">
-                                                        <input type="text" placeholder="Enter your website URL ">
+                                                        <input type="text" name="web_link_name"
+                                                        value="{{ $user_details->web_link }}" placeholder="Enter your website URL ">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-md-6 col-12">
                                                 <div class="profile_input_item">
-                                                   
-                                                    <button class="copy_button_link">Add link</button>
+
+                                                    <button class="copy_button_link" type="submit">Update</button>
                                                 </div>
                                             </div>
                                         </div>
+                                    </form>
+
                                     </div>
-        
+
                                 </div>
                             </div>
                         </div>
@@ -447,26 +530,28 @@
                                         <h4>
                                             Security
                                         </h4>
-                                        <p>Change your email address and password</p>
+                                        <p>The security of your account is very important to us, regular update with strong password is highly recommend.</p>
                                     </div>
 
                                     <div class="dashboard_body">
+                                        <form method="post" action="{{ url('/user/password_update') }}">
+                                            @csrf
                                         <div class="row">
-                                            
+
                                             <div class="col-lg-12    col-md-12 col-12">
                                                 <div class="profile_input_item">
-                                                    <label for="email_address">New email address</label>
+                                                    <label for="email_address">Email address</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="email_address">
+                                                        <input type="text" name="email_address" placeholder="Registered Email address">
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="col-lg-12 col-12">
                                                 <div class="profile_input_item">
                                                     <label for="company">New password </label>
                                                     <div class="input_item">
-                                                        <input type="text" name="company">
+                                                        <input type="password" name="new_password" placeholder="New password">
                                                     </div>
                                                 </div>
                                             </div>
@@ -474,21 +559,23 @@
                                                 <div class="profile_input_item">
                                                     <label for="company">Confirm password</label>
                                                     <div class="input_item">
-                                                        <input type="text" name="company">
+                                                        <input type="password" name="confirm_password" placeholder="Confirm password">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-12 col-12">
                                                 <div class="submition_btn text-right">
-                                                    <button class="copy_button_link">Save</button>
+                                                    <button class="copy_button_link" type="submit">Update</button>
                                                 </div>
                                             </div>
                                         </div>
+                                        </form>
                                     </div>
-        
+
                                 </div>
                             </div>
                         </div>
+
                         <div id="preferences" class="tab-content">
                             <div class="dash_board_card">
                                 <div class="inner_dashboard_section">
@@ -498,7 +585,8 @@
                                         </h4>
                                         <p>Change your email address and password</p>
                                     </div>
-
+                                    <form action="{{ url('/user/update_preferences') }}" method="post">
+                                        @csrf
                                     <div class="dashboard_body">
                                         <div class="row">
                                             <div class="col-lg-6">
@@ -514,7 +602,7 @@
                                             <div class="col-lg-6 col-md-6 col-12">
                                                 <div class="profile_input_item height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value="yes" checked>
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch" name="email_like" value="true" {{ $preference->like_notify ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch">
                                                             <h4>Likes</h4>
                                                             <p>Get notified via email when someone likes your project</p>
@@ -523,7 +611,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch2" name="darkmode" value="yes" >
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch2" name="email_comment" value="true" {{ $preference->comment_notify ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch2">
                                                             <h4>Comments</h4>
                                                             <p>Get notified via email when someone comments on your project</p>
@@ -532,7 +620,7 @@
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="mySwitch3" name="darkmode" value="yes" >
+                                                        <input class="form-check-input" type="checkbox" id="mySwitch3" name="email_share" value="true" {{ $preference->share_notify ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="mySwitch3">
                                                             <h4>Share</h4>
                                                             <p>Get notified via email when someone shares your project</p>
@@ -540,96 +628,146 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="col-lg-12 col-12">
                                                 <div class="profile_input_item">
                                                     <hr>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="col-lg-6">
                                                 <div class="pr_switch_label">
                                                     <h4>
                                                         Show social links
                                                     </h4>
                                                     <p>
-                                                        Change your email address and password
+                                                        manage the visibility of your social links and other information on your profile
                                                     </p>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-12">
                                                 <div class="profile_input_item height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c1s" name="darkmode" value="yes" checked>
+                                                        <input class="form-check-input" type="checkbox" id="c1s" name="show_link" value="true" {{ $preference->show_social_link ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="c1s">
                                                             <h4>Show social links</h4>
-                                                            <p>Change your email address and password</p>
+                                                            <p>If turn on, this will show your social links in your public profile</p>
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c2s" name="darkmode" value="yes" >
+                                                        <input class="form-check-input" type="checkbox" id="c2s" name="show_edu" value="true" {{ $preference->show_education ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="c2s">
                                                             <h4>Show education</h4>
-                                                            <p>Change your email address and password</p>
+                                                            <p>When turn on, it will display your education in your public profile</p>
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c3s" name="darkmode" value="yes" >
+                                                        <input class="form-check-input" type="checkbox" id="c3s" name="show_work_exp" value="true" {{ $preference->show_work_experience ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="c3s">
                                                             <h4>Show work experience</h4>
-                                                            <p>Change your email address and password</p>
+                                                            <p>If turn on, it will show your work experience in public profile</p>
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div class="profile_input_item  height_auto">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="c4s" name="darkmode" value="yes" >
+                                                        <input class="form-check-input" type="checkbox" id="c4s" name="show_other" value="true" {{ $preference->show_other_link ? 'checked' : '' }} style="cursor: pointer;">
                                                         <label class="form-check-label" for="c4s">
                                                             <h4>Show additional links</h4>
-                                                            <p>Change your email address and password</p>
+                                                            <p>When turn on, this will display other links in your public profile</p>
                                                         </label>
                                                     </div>
                                                 </div>
                                             </div>
-
-
                                         </div>
                                     </div>
-        
+                                    <div class="col-lg-12 col-12">
+                                        <div class="submition_btn text-right">
+                                            <button class="copy_button_link" type="submit">Save</button>
+                                        </div>
+                                    </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
-                
+
             </div>
         </div>
     </div>
-    <!-------------------------------popup_section----------------------->
-    <div class="modal" id="myModal">
+
+
+    <!-------------------------------Upload profile image popup----------------------->
+    <div class="modal" id="imageModal">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-      
+
             <!-- Modal Header -->
             <div class="corner-modal-header">
-              
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-      
+
+            <!-- Modal body -->
+            <form method="post" action="{{ url('/user/update-photo') }}" enctype="multipart/form-data">
+                @csrf
+            <div class="modal-body">
+                <div class="dashboard_body popup_body">
+                    <h4>Upload profile photo</h4>
+                <p>Photo must be PNG or JPG and it should not be larger than 5MB</p>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-12">
+                            <div class="profile_input_item">
+                                <label for="Job-title">Choose Photo</label>
+                                <div class="input_item">
+                                    <input type="file" name="image" placeholder="select photo">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 col-12">
+                            <div class="submition_btn text-right">
+                                <button class="copy_button_link" type="submit">Upload</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+          </div>
+        </div>
+    </div>
+    <!-------------------------------popup_section----------------------->
+    <div class="modal" id="work_experience_modal">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="corner-modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
             <!-- Modal body -->
             <div class="modal-body">
                 <div class="dashboard_body popup_body">
+                    <p>
+                        Add your work experience to your profile here</p>
+                        @php
+                            $today = date('Y-m-d');
+                        @endphp
                     <div class="row">
+                        <form method="post" action="{{ url('/user/work-experience') }}" enctype="multipart/form-data">
+                            @csrf
                         <div class="col-lg-12 col-md-12 col-12">
                             <div class="profile_input_item">
                                 <label for="Job-title">Job title</label>
                                 <div class="input_item">
-                                    <input type="text" name="Job-title" placeholder="Ex. Data scientist">
+                                    <input type="text" name="Job_title" placeholder="Ex. Data scientist">
                                 </div>
                             </div>
                         </div>
@@ -637,7 +775,7 @@
                             <div class="profile_input_item">
                                 <label for="Company/Organization">Company/Organization</label>
                                 <div class="input_item">
-                                    <input type="text" name="organization">
+                                    <input type="text" name="job_company">
                                 </div>
                             </div>
                         </div>
@@ -645,7 +783,7 @@
                             <div class="profile_input_item">
                                 <label for="first_name">Start date</label>
                                 <div class="input_item">
-                                    <input type="text" placeholder="DD/MM/YY">
+                                    <input type="date" name="job_date_start" max="{{ $today }}" placeholder="DD/MM/YY">
                                 </div>
                             </div>
                         </div>
@@ -653,27 +791,28 @@
                             <div class="profile_input_item">
                                 <label for="first_name">End date</label>
                                 <div class="input_item">
-                                    <input type="text" placeholder="DD/MM/YY">
+                                    <input type="date" name="job_date_end" id="job_date_end" max="{{ $today }}" placeholder="DD/MM/YY">
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-12  col-12">
                             <div class="custom_check_box">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="check1" name="option1" value="something" >
+                                    <input class="form-check-input" type="checkbox" id="job_current" name="job_current" value="0" >
                                     <label class="form-check-label">I currently work here</label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-12 col-12">
                             <div class="submition_btn ">
-                                <button class="copy_button_link">Add work experience</button>
+                                <button class="copy_button_link" type="submit">Add work experience</button>
                             </div>
                         </div>
+                    </form>
                     </div>
                 </div>
             </div>
-      
+
           </div>
         </div>
     </div>
@@ -681,13 +820,13 @@
     <div class="modal" id="ask_delete">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-      
+
             <!-- Modal Header -->
             <div class="corner-modal-header">
-              
+
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-      
+
             <!-- Modal body -->
             <div class="modal-body">
                 <div class="dashboard_body popup_body">
@@ -722,7 +861,7 @@
                     </div>
                 </div>
             </div>
-      
+
           </div>
         </div>
     </div>
@@ -730,22 +869,28 @@
     <div class="modal" id="education_modal">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-      
+
             <!-- Modal Header -->
             <div class="corner-modal-header">
-              
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-      
+
             <!-- Modal body -->
             <div class="modal-body">
                 <div class="dashboard_body popup_body">
+                    <p>
+                        Add your education qualification to your profile here</p>
+                        @php
+                            $today = date('Y-m-d');
+                        @endphp
                     <div class="row">
+                        <form method="post" action="{{ url('/user/add-education') }}" enctype="multipart/form-data">
+                            @csrf
                         <div class="col-lg-12 col-md-12 col-12">
                             <div class="profile_input_item">
                                 <label for="Job-title">Degree</label>
                                 <div class="input_item">
-                                    <input type="text" name="Job-title" placeholder="Ex. Data scientist">
+                                    <input type="text" name="edu_degree" placeholder="Ex. BSC, Computer Science">
                                 </div>
                             </div>
                         </div>
@@ -753,7 +898,7 @@
                             <div class="profile_input_item">
                                 <label for="Institution">Institution</label>
                                 <div class="input_item">
-                                    <input type="text" name="Institution">
+                                    <input type="text" name="edu_institution" placeholder="Ex. University of London">
                                 </div>
                             </div>
                         </div>
@@ -761,7 +906,7 @@
                             <div class="profile_input_item">
                                 <label for="first_name">Start date</label>
                                 <div class="input_item">
-                                    <input type="text" placeholder="DD/MM/YY">
+                                    <input type="date" name="edu_start_date" id="edu_start_date" max="{{ $today }}" placeholder="DD/MM/YY">
                                 </div>
                             </div>
                         </div>
@@ -769,33 +914,34 @@
                             <div class="profile_input_item">
                                 <label for="first_name">End date</label>
                                 <div class="input_item">
-                                    <input type="text" placeholder="DD/MM/YY">
+                                    <input type="date" name="edu_end_date" max="{{ $today }}" id="edu_end_date" placeholder="DD/MM/YY">
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-lg-12 col-12">
                             <div class="submition_btn ">
-                                <button class="copy_button_link">Add education</button>
+                                <button class="copy_button_link" type="submit">Add education</button>
                             </div>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
-      
+
           </div>
         </div>
     </div>
     <div class="modal" id="ask_delete_education">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-      
+
             <!-- Modal Header -->
             <div class="corner-modal-header">
-              
+
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-      
+
             <!-- Modal body -->
             <div class="modal-body">
                 <div class="dashboard_body popup_body">
@@ -830,11 +976,66 @@
                     </div>
                 </div>
             </div>
-      
+
           </div>
         </div>
     </div>
+
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./dashboardAsset/js/script.js"></script>
+
+    <script>
+        document.getElementById('imageInput').addEventListener('change', function(event) {
+            const imagePreview = document.getElementById('imagePreview');
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+
+            if (file) {
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Only JPG, JPEG, and PNG files are allowed.');
+                    fileInput.value = '';
+                    imagePreview.style.display = 'none';
+                    return;
+                }
+
+                if (file.size > maxSize) {
+                    alert('Project image size should not exceed 5MB.');
+                    fileInput.value = '';
+                    imagePreview.style.display = 'none';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkbox = document.getElementById('job_current');
+            const endDate = document.getElementById('job_date_end');
+
+            function toggleEndDate() {
+                endDate.disabled = checkbox.checked;
+                if (checkbox.checked) {
+                    endDate.value = '';
+                }
+            }
+
+            checkbox.addEventListener('change', toggleEndDate);
+            toggleEndDate();
+        });
+
+    </script>
 </body>
 </html>

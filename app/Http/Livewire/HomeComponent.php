@@ -2,13 +2,15 @@
 
 namespace App\Http\Livewire;
 
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class HomeComponent extends Component
 {
     public function render()
     {
-        return view('livewire.home-component')->layout('layouts.master');
+        $user = Auth::user();
+        return view('livewire.home-component', ['user_details' => $user])->layout('layouts.master');
     }
 
 }

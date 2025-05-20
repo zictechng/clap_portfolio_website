@@ -8,7 +8,7 @@
 
     <!-- Topbar Search -->
 
-    <h1 class="h3 mb-0 text-gray-800 mr-3 hidden_onMobile">Dashboard</h1> hello, <b> Abel</b>
+    <h1 class="h3 mb-0 text-gray-800 mr-3 hidden_onMobile">Dashboard</h1> hello, &nbsp;<b>{{ ' '.$user_details->name }}</b>
 
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
@@ -31,27 +31,33 @@
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img class="img-profile rounded-circle"
-                    src="{{asset('assets/img/team/user_profile.png')}}">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small ml-3 mr-2">Abel Developer <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+                @if(!empty($user_details->profile_url) && file_exists(public_path('profile_images/' . $user_details->profile_url)))
+                <img src="{{ asset('profile_images/' . $user_details->profile_url) }}" alt="Profile Image" class="img-profile rounded-circle" >
+            @else
+            <img class="img-profile rounded-circle"
+            src="{{asset('assets/img/team/user_profile.png')}}">
+            @endif
+
+
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small ml-3 mr-2">{{ $user_details->name.' '.$user_details->lname }} <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
 
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                 aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="/user/edit-profile">
+                <a class="dropdown-item" href="/user/profile">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="/user/portfolio">
                     <i class="fa fa-suitcase fa-sm fa-fw mr-2 text-gray-400" aria-hidden="true"></i>
                     My Portfolio
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="/user/new-project">
                     <i class="fa fa-suitcase fa-sm fa-fw mr-2 text-gray-400" aria-hidden="true"></i>
                     Create Portfolio
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="/user/edit-profile">
                     <i class="fa fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
                     Change Password </a>
                 </a>

@@ -1,4 +1,19 @@
-<div class="page_dashboard">
+{{-- Custom CSS for toggling work experience --}}
+<style>
+    #more-work {
+        transition: max-height 0.5s ease;
+        overflow: hidden;
+    }
+    #more-text {
+    transition: max-height 0.5s ease;
+    overflow: hidden;
+}
+</style>
+    @php
+    use Illuminate\Support\Str;
+    @endphp
+
+    <div class="page_dashboard">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-4 col-xl-3 col-md-4 col-12">
@@ -8,33 +23,54 @@
                         <div class="inner_profile_boxs">
                             <div class="profile_top">
                                 <div class="profile_image">
-                                    <img src="{{asset('dashboardAsset/images/avatar.png')}}" alt="" srcset="">
+                                    @if(!empty($user_details->profile_url) && file_exists(public_path('profile_images/' . $user_details->profile_url)))
+                                        <img src="{{ asset('profile_images/' . $user_details->profile_url) }}" alt="Profile Image" style="max-width: 80px; height: 80px;" class="rounded-circle object-fit: cover;">
+                                    @else
+                                        <img src="{{ asset('dashboardAsset/images/avatar.png') }}" alt="Default Image" style="max-width: 100%; height: auto;">
+                                    @endif
+
                                 </div>
                             </div>
                             <div class="profile_bottom">
-                                <a href="" class="edit_pro">
+                                <a href="/user/edit-profile" class="edit_pro">
                                     <span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                             <path d="M13.8001 19.5524H19.8001M4.2002 19.5524L8.56618 18.6727C8.79796 18.626 9.01077 18.5119 9.17791 18.3446L18.9516 8.56559C19.4202 8.09674 19.4199 7.33675 18.9509 6.86829L16.8805 4.80021C16.4117 4.33194 15.6521 4.33226 15.1837 4.80092L5.40896 14.581C5.24214 14.7479 5.12824 14.9603 5.0815 15.1916L4.2002 19.5524Z" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                           </svg>
-                                    </span>
+        </span>
                                 </a>
                                 <div class="profile_main_title">
                                     <h4>
-                                        James Bond
+                                        {{ $user_details->name?:'' }} {{ $user_details->lname?:'' }}
                                     </h4>
-                                    <p>Company name</p>
-                                    <p>Your Occupation</p>
+                                    <p>{{ $user_details->user_company?:'' }}</p>
+                                    <p>{{ $user_details->user_occupation?:'' }}</p>
                                 </div>
                                 <div class="profile_deg">
                                     <h4>
                                         Biography
                                     </h4>
-                                    <p>Your biography goes here</p>
+                                    @php
+                                        $biography = $user_details->user_biography ?? '';
+                                        $shortBio = \Illuminate\Support\Str::limit($biography, 150);
+                                    @endphp
+
+                                    <p id="bio-preview">
+                                        {{ $shortBio }}
+                                        @if (strlen($biography) > 150)
+                                            <span id="dots">...</span>
+                                            <span id="more-text" style="display: block; max-height: 0; overflow: hidden; transition: max-height 0.5s ease;">
+                                                {{ substr($biography, 150) }}
+                                            </span>
+                                            <a href="javascript:void(0);" id="toggle-bio" onclick="toggleBio()" style="text-decoration: none;">Read more</a>
+                                        @endif
+                                    </p>
+
                                 </div>
                             </div>
                         </div>
                        </div>
+
                        <div class="credentials">
                         <div class="inner_credentials">
                             <div class="cr_headings d-flex align-items-center justify-content-space-between">
@@ -91,18 +127,21 @@
                             </div>
                         </div>
                        </div>
+
                        <div class="credentials">
                         <div class="inner_credentials">
                             <div class="cr_headings d-flex align-items-center justify-content-space-between">
                                 <h4>Education</h4>
-                                <a href="" class="cr_edit_pro">
+                                <a href="/user/edit-profile" class="cr_edit_pro">
                                     <span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                             <path d="M13.8001 19.5524H19.8001M4.2002 19.5524L8.56618 18.6727C8.79796 18.626 9.01077 18.5119 9.17791 18.3446L18.9516 8.56559C19.4202 8.09674 19.4199 7.33675 18.9509 6.86829L16.8805 4.80021C16.4117 4.33194 15.6521 4.33226 15.1837 4.80092L5.40896 14.581C5.24214 14.7479 5.12824 14.9603 5.0815 15.1916L4.2002 19.5524Z" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                           </svg>
-                                    </span>
+        </span>
                                 </a>
                             </div>
+
+                            @if ($user_education->isEmpty())
                             <div class="cr_icons">
                                 <span>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="56" height="70" viewBox="0 0 56 70" fill="none">
@@ -145,20 +184,61 @@
                                 <h4>You have not displayed any educational qualifications</h4>
                                 <p>Add your educational qualifications to improve your profile</p>
                             </div>
+                            @else
+                                @php
+                                    $eduChunks = $user_education->chunk(3);
+                                @endphp
+
+                                <div id="edu-container">
+                                    {{-- First 5 --}}
+                                    @foreach ($eduChunks->first() as $education)
+                                        <div class="education-record mb-3 p-3 border rounded">
+                                            <h5>{{ $education->degree_name ?? 'N/A' }}</h5>
+                                            <p class="mb-1">{{ $education->institution_name ?? 'N/A' }}</p>
+                                            <small class="text-muted">
+                                                {{ optional($education->start_date ? \Carbon\Carbon::parse($education->start_date) : null)->format('d F Y') }}
+                                                –
+                                                {{ $education->end_date ? \Carbon\Carbon::parse($education->end_date)->format('d F Y') : 'Till date' }}
+                                            </small>
+                                        </div>
+                                    @endforeach
+
+                                    {{-- More Education --}}
+                                    @if ($eduChunks->count() > 1)
+                                        <div id="more-edu" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease;">
+                                            @foreach ($eduChunks->slice(1)->flatten() as $education)
+                                                <div class="education-record mb-3 p-3 border rounded">
+                                                    <h5>{{ $education->degree_name ?? 'N/A' }}</h5>
+                                                    <p class="mb-1">{{ $education->institution_name ?? 'N/A' }}</p>
+                                                    <small class="text-muted">
+                                                        {{ optional($education->start_date ? \Carbon\Carbon::parse($education->start_date) : null)->format('d F Y') }}
+                                                        –
+                                                        {{ $education->end_date ? \Carbon\Carbon::parse($education->end_date)->format('d F Y') : 'Till date' }}
+                                                    </small>
+                                                </div>
+                                            @endforeach
+                                        </div>
+
+                                        <a href="javascript:void(0);" onclick="toggleEdu()" id="toggle-edu-btn" style="text-decoration: none;">View more...</a>
+                                    @endif
+                                </div>
+                                @endif
                         </div>
                        </div>
+
                        <div class="credentials">
                         <div class="inner_credentials">
                             <div class="cr_headings d-flex align-items-center justify-content-space-between">
                                 <h4>Work Experience</h4>
-                                <a href="" class="cr_edit_pro">
+                                <a href="/user/edit-profile" class="cr_edit_pro">
                                     <span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                             <path d="M13.8001 19.5524H19.8001M4.2002 19.5524L8.56618 18.6727C8.79796 18.626 9.01077 18.5119 9.17791 18.3446L18.9516 8.56559C19.4202 8.09674 19.4199 7.33675 18.9509 6.86829L16.8805 4.80021C16.4117 4.33194 15.6521 4.33226 15.1837 4.80092L5.40896 14.581C5.24214 14.7479 5.12824 14.9603 5.0815 15.1916L4.2002 19.5524Z" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                           </svg>
-                                    </span>
+                               </span>
                                 </a>
                             </div>
+                            @if ($work_experience->isEmpty())
                             <div class="cr_icons">
                                 <span>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="56" height="70" viewBox="0 0 56 70" fill="none">
@@ -201,12 +281,55 @@
                                 <h4>You have not added any work experience</h4>
                                 <p>Add your work experience to improve your profile</p>
                             </div>
+                            @else
+                                @php
+                                    $workChunks = $work_experience->chunk(3);
+                                @endphp
+
+                                <div id="work-container">
+                                    {{-- First 5 --}}
+                                    @foreach ($workChunks->first() as $work)
+                                        <div class="education-record mb-3 p-3 border rounded">
+                                            <h5>{{ $work->job_title ?? 'N/A' }}</h5>
+                                            <p class="mb-1">{{ $work->job_organization ?? 'N/A' }}</p>
+                                            <small class="text-muted">
+                                                {{ \Carbon\Carbon::parse($work->job_start_date)->format('d F Y') }} –
+                                                {{ $work->job_end_date ? \Carbon\Carbon::parse($work->job_end_date)->format('d F Y') : 'Till date' }}
+                                            </small>
+                                        </div>
+                                    @endforeach
+
+                                    {{-- More Work --}}
+                                    @if ($workChunks->count() > 1)
+                                        <div id="more-work" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease;">
+                                            @foreach ($workChunks->slice(1)->flatten() as $work)
+                                                <div class="education-record mb-3 p-3 border rounded">
+                                                    <h5>{{ $work->job_title ?? 'N/A' }}</h5>
+                                                    <p class="mb-1">{{ $work->job_organization ?? 'N/A' }}</p>
+                                                    <small class="text-muted">
+                                                        {{ \Carbon\Carbon::parse($work->job_start_date)->format('d F Y') }} –
+                                                        {{ $work->job_end_date ? \Carbon\Carbon::parse($work->job_end_date)->format('d F Y') : 'Till date' }}
+                                                    </small>
+                                                </div>
+                                            @endforeach
+                                        </div>
+
+                                        <a href="javascript:void(0);" onclick="toggleWork()" id="toggle-work-btn" style="text-decoration: none;">View more...</a>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                        </div>
                     </div>
                 </div>
                 <div class="col-lg-8 col-xl-9 col-md-8 col-12">
                     <div class="content user_scores">
+                        @if(Session::has('message'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert" role="alert">
+                                {{Session::get('message')}}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
                         <!---------------------------project row wrapers---------------------------->
                         <!-- Portfolio Strength: -->
                          <div class="projects">
@@ -243,6 +366,8 @@
                                         <div class="next_data_center_header">
                                             <h4>Complete all steps to improve your portfolio</h4>
                                         </div>
+                                        @if(!empty($user_details->profile_url) && file_exists(public_path('profile_images/' . $user_details->profile_url)))
+                                        @else
                                         <div class="next_data_center_body">
                                             <div class="column_row_wrapers">
                                                 <div class="column_wraper">
@@ -259,6 +384,8 @@
                                                 </a>
                                             </div>
                                         </div>
+                                        @endif
+
                                     </div>
                                 </div>
                              </div>
@@ -275,6 +402,7 @@
                                         </span>
                                     </a>
                                 </div>
+                                @if($user_project->isEmpty())
                                 <div class="cr_icons">
                                     <span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="56" height="70" viewBox="0 0 56 70" fill="none">
@@ -317,236 +445,213 @@
                                     <h4>You have not uploaded any projects</h4>
                                     <p>Upload credentials to improve your profile</p>
                                 </div>
+                                @else
+                                <div class="main_profile_table_wraper">
+                                    <div class="inner_table">
+                                        <table class="table">
+                                            <thead>
+                                              <tr>
+                                                <th>#</th>
+                                                <th>Title</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($user_project as $index => $project)
+                                              <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>
+                                                    <div class="table_data d-flex align-items-center g-3">
+                                                        <div class="data_image">
+                                                            @if(!empty($project->project_image) && file_exists(public_path('project_images/' . $project->project_image)))
+                                                            <img src="{{ asset('project_images/' . $project->project_image) }}" alt="Project Image" style="width: 120px; height: 70px; border-radius: 8px">
+                                                        @else
+                                                            <img src="{{ asset('dashboardAsset/images/profile_pics.png') }}" alt="Project Default Image" style="max-width: 100%; height: auto;">
+                                                        @endif
+                                                        </div>
+                                                        <h4>
+                                                {{ Str::limit($project->project_title, 50) }}
+                                                        </h4>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    @if ($project->project_status === 'active')
+                                                    <button class="published_btn bg-success">
+                                                        Published
+                                                    </button>
+                                                    @elseif ($project->project_status === 'pending')
+                                                    <small class="published_btn btn bg-warning">
+                                                        Pending
+                                                    </small>
+                                                    @elseif ($project->project_status === 'draft')
+                                                    <small class="published_btn btn bg-danger text-white">
+                                                        Draft
+                                                    </small>
+                                                        @elseif ($project->project_status === 'suspended')
+                                                        <small class="published_btn btn bg-secondary text-white">
+                                                            Suspended
+                                                        </small>
+                                                    @else
+                                                        Unknown
+                                                    @endif
+                                                </td>
+                                                <td>
+
+                                                    <div class="wrape_action">
+                                                        <div class="dropdown">
+                                                            <button type="button" class="btn btngrapy dropdown-toggle" data-bs-toggle="dropdown">
+                                                              Dropdown button
+                                                            </button>
+                                                            <ul class="dropdown-menu custom_dd_links">
+                                                                <li><a class="dropdown-item" href="#">View project page</a></li>
+                                                                <li><a class="dropdown-item" href="#">Copy project link</a></li>
+                                                                <li><a class="dropdown-item" href="{{ route('user.edit-project', Crypt::encrypt($project->id)) }}">Edit project</a></li>
+                                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-project-id="{{ $project->id }}">Delete project</a></li>
+                                                            </ul>
+                                                          </div>
+                                                    </div>
+                                                </td>
+                                              </tr>
+                                              @endforeach
+                                            </tbody>
+                                          </table>
+                                        </div>
+
+                                    {{-- Pagination Section --}}
+                                    <div class="table_bottom_section">
+                                        <div class="pagination_count">
+                                            <h4>Showing {{ $user_project->count() }} of {{ $user_project->total() }} projects</h4>
+                                        </div>
+
+                                        <div class="paginavtion">
+                                            {{ $user_project->links() }}
+                                        </div>
+
+                                        <div class="pagination_filter">
+                                            <label for="">Show</label>
+                                            <div class="pg_fl">
+                                                <select onchange="window.location='?perPage='+this.value">
+                                                    <option value="5" {{ request('perPage') == 5 ? 'selected' : '' }}>5</option>
+                                                    <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                            </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
-    <!-------------------------------popup_section----------------------->
-    <div class="modal" id="myModal">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="corner-modal-header">
-
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-                <div class="dashboard_body popup_body">
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-12">
-                            <div class="profile_input_item">
-                                <label for="Job-title">Job title</label>
-                                <div class="input_item">
-                                    <input type="text" name="Job-title" placeholder="Ex. Data scientist">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12  col-md-12 col-12">
-                            <div class="profile_input_item">
-                                <label for="Company/Organization">Company/Organization</label>
-                                <div class="input_item">
-                                    <input type="text" name="organization">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6  col-md-6 col-12">
-                            <div class="profile_input_item">
-                                <label for="first_name">Start date</label>
-                                <div class="input_item">
-                                    <input type="text" placeholder="DD/MM/YY">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6   col-md-6 col-12">
-                            <div class="profile_input_item">
-                                <label for="first_name">End date</label>
-                                <div class="input_item">
-                                    <input type="text" placeholder="DD/MM/YY">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12  col-12">
-                            <div class="custom_check_box">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="check1" name="option1" value="something" >
-                                    <label class="form-check-label">I currently work here</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12 col-12">
-                            <div class="submition_btn ">
-                                <button class="copy_button_link">Add work experience</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-          </div>
-        </div>
-    </div>
 <!-----------------------Delete popup sections------------------>
-    <div class="modal" id="ask_delete">
+    <div class="modal" id="deleteModal">
         <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-
+        <div class="modal-content">
             <!-- Modal Header -->
             <div class="corner-modal-header">
-
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
             <!-- Modal body -->
             <div class="modal-body">
                 <div class="dashboard_body popup_body">
                     <div class="row">
+                        <form method="post" action="{{ url('/user/delete-project') }}">
+                            @csrf
+                        <input type="hidden" name="project_id" id="delete_project_id" name="project_id" value="">
                         <div class="col-lg-12 col-12">
                             <div class="profile_delete_item">
                                 <div class="alert_icons">
                                     <span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
                                             <g clip-path="url(#clip0_439_1880)">
-                                              <rect width="32" height="32" fill="#DF3A3A"/>
-                                              <path fill-rule="evenodd" clip-rule="evenodd" d="M8.80812 1.00421C9.45111 0.361223 10.3232 0 11.2325 0H20.7675C21.6768 0 22.5489 0.361223 23.1918 1.00421L30.9959 8.80812C31.6389 9.45111 32 10.3232 32 11.2325V20.7675C32 21.6768 31.6389 22.5489 30.9959 23.1918L23.1918 30.9959C22.5489 31.6389 21.6768 32 20.7675 32H11.2325C10.3232 32 9.45111 31.6389 8.80812 30.9959L1.00421 23.1918C0.361223 22.5489 0 21.6768 0 20.7675V11.2325C0 10.3232 0.361223 9.45111 1.00421 8.80812L8.80812 1.00421ZM16 7.14286C16.9468 7.14286 17.7143 7.91038 17.7143 8.85714V16.2857C17.7143 17.2325 16.9468 18 16 18C15.0532 18 14.2857 17.2325 14.2857 16.2857V8.85714C14.2857 7.91038 15.0532 7.14286 16 7.14286ZM18.2857 22.5714C18.2857 23.8338 17.2624 24.8571 16 24.8571C14.7376 24.8571 13.7143 23.8338 13.7143 22.5714C13.7143 21.3091 14.7376 20.2857 16 20.2857C17.2624 20.2857 18.2857 21.3091 18.2857 22.5714Z" fill="white"/>
+                                            <rect width="32" height="32" fill="#DF3A3A"/>
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.80812 1.00421C9.45111 0.361223 10.3232 0 11.2325 0H20.7675C21.6768 0 22.5489 0.361223 23.1918 1.00421L30.9959 8.80812C31.6389 9.45111 32 10.3232 32 11.2325V20.7675C32 21.6768 31.6389 22.5489 30.9959 23.1918L23.1918 30.9959C22.5489 31.6389 21.6768 32 20.7675 32H11.2325C10.3232 32 9.45111 31.6389 8.80812 30.9959L1.00421 23.1918C0.361223 22.5489 0 21.6768 0 20.7675V11.2325C0 10.3232 0.361223 9.45111 1.00421 8.80812L8.80812 1.00421ZM16 7.14286C16.9468 7.14286 17.7143 7.91038 17.7143 8.85714V16.2857C17.7143 17.2325 16.9468 18 16 18C15.0532 18 14.2857 17.2325 14.2857 16.2857V8.85714C14.2857 7.91038 15.0532 7.14286 16 7.14286ZM18.2857 22.5714C18.2857 23.8338 17.2624 24.8571 16 24.8571C14.7376 24.8571 13.7143 23.8338 13.7143 22.5714C13.7143 21.3091 14.7376 20.2857 16 20.2857C17.2624 20.2857 18.2857 21.3091 18.2857 22.5714Z" fill="white"/>
                                             </g>
                                             <defs>
-                                              <clipPath id="clip0_439_1880">
+                                            <clipPath id="clip0_439_1880">
                                                 <rect width="32" height="32" fill="white"/>
-                                              </clipPath>
+                                            </clipPath>
                                             </defs>
-                                          </svg>
+                                        </svg>
                                     </span>
                                 </div>
-                                <h4>Delete Work Experience</h4>
-                                <p>Are you sure you want to delete this work experience? This action cannot be undone</p>
+                                <h4>Delete Project</h4>
+                                <p>Are you sure you want to delete this Project? This action cannot be undone</p>
                             </div>
                         </div>
                         <div class="col-lg-12 col-12">
                             <div class="submition_btn align-items-center btn_center">
-                                <button class="copy_button_link">No, Return</button>
-                                <button class="copy_button_link delete_buttons">Yes, Delete</button>
+                                <button class="copy_button_link" data-bs-dismiss="modal">No, Return</button>
+                                <button class="copy_button_link delete_buttons" type="submit">Yes, Delete</button>
                             </div>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
-
-          </div>
+        </div>
         </div>
     </div>
-    <!---------------------------------education popup ------------------>
-    <div class="modal" id="education_modal">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="corner-modal-header">
+    <script>
+        function toggleBio() {
+        const moreText = document.getElementById('more-text');
+        const dots = document.getElementById('dots');
+        const btn = document.getElementById('toggle-bio');
 
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
+        if (moreText.style.maxHeight && moreText.style.maxHeight !== '0px') {
+            // Hide extra text
+            moreText.style.maxHeight = '0';
+            dots.style.display = 'inline';
+            btn.innerText = 'Read more';
+        } else {
+            // Show extra text
+            moreText.style.maxHeight = moreText.scrollHeight + 'px';
+            dots.style.display = 'none';
+            btn.innerText = 'Read less';
+        }
+    }
 
-            <!-- Modal body -->
-            <div class="modal-body">
-                <div class="dashboard_body popup_body">
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-12">
-                            <div class="profile_input_item">
-                                <label for="Job-title">Degree</label>
-                                <div class="input_item">
-                                    <input type="text" name="Job-title" placeholder="Ex. Data scientist">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12  col-md-12 col-12">
-                            <div class="profile_input_item">
-                                <label for="Institution">Institution</label>
-                                <div class="input_item">
-                                    <input type="text" name="Institution">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6  col-md-6 col-12">
-                            <div class="profile_input_item">
-                                <label for="first_name">Start date</label>
-                                <div class="input_item">
-                                    <input type="text" placeholder="DD/MM/YY">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6   col-md-6 col-12">
-                            <div class="profile_input_item">
-                                <label for="first_name">End date</label>
-                                <div class="input_item">
-                                    <input type="text" placeholder="DD/MM/YY">
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="col-lg-12 col-12">
-                            <div class="submition_btn ">
-                                <button class="copy_button_link">Add education</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        function toggleWork() {
+        const moreWork = document.getElementById('more-work');
+        const btn = document.getElementById('toggle-work-btn');
 
-          </div>
-        </div>
-    </div>
-    <div class="modal" id="ask_delete_education">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
+        if (moreWork.style.maxHeight && moreWork.style.maxHeight !== "0px") {
+            moreWork.style.maxHeight = "0";
+            btn.innerText = "View more...";
+        } else {
+            moreWork.style.maxHeight = moreWork.scrollHeight + "px";
+            btn.innerText = "Show less";
+        }
+    }
 
-            <!-- Modal Header -->
-            <div class="corner-modal-header">
+    function toggleEdu() {
+        const moreEdu = document.getElementById('more-edu');
+        const btn = document.getElementById('toggle-edu-btn');
 
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
+        if (moreEdu.style.maxHeight && moreEdu.style.maxHeight !== "0px") {
+            moreEdu.style.maxHeight = "0";
+            btn.innerText = "View more...";
+        } else {
+            moreEdu.style.maxHeight = moreEdu.scrollHeight + "px";
+            btn.innerText = "Show less";
+        }
+    }
 
-            <!-- Modal body -->
-            <div class="modal-body">
-                <div class="dashboard_body popup_body">
-                    <div class="row">
-                        <div class="col-lg-12 col-12">
-                            <div class="profile_delete_item">
-                                <div class="alert_icons">
-                                    <span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                            <g clip-path="url(#clip0_439_1880)">
-                                              <rect width="32" height="32" fill="#DF3A3A"/>
-                                              <path fill-rule="evenodd" clip-rule="evenodd" d="M8.80812 1.00421C9.45111 0.361223 10.3232 0 11.2325 0H20.7675C21.6768 0 22.5489 0.361223 23.1918 1.00421L30.9959 8.80812C31.6389 9.45111 32 10.3232 32 11.2325V20.7675C32 21.6768 31.6389 22.5489 30.9959 23.1918L23.1918 30.9959C22.5489 31.6389 21.6768 32 20.7675 32H11.2325C10.3232 32 9.45111 31.6389 8.80812 30.9959L1.00421 23.1918C0.361223 22.5489 0 21.6768 0 20.7675V11.2325C0 10.3232 0.361223 9.45111 1.00421 8.80812L8.80812 1.00421ZM16 7.14286C16.9468 7.14286 17.7143 7.91038 17.7143 8.85714V16.2857C17.7143 17.2325 16.9468 18 16 18C15.0532 18 14.2857 17.2325 14.2857 16.2857V8.85714C14.2857 7.91038 15.0532 7.14286 16 7.14286ZM18.2857 22.5714C18.2857 23.8338 17.2624 24.8571 16 24.8571C14.7376 24.8571 13.7143 23.8338 13.7143 22.5714C13.7143 21.3091 14.7376 20.2857 16 20.2857C17.2624 20.2857 18.2857 21.3091 18.2857 22.5714Z" fill="white"/>
-                                            </g>
-                                            <defs>
-                                              <clipPath id="clip0_439_1880">
-                                                <rect width="32" height="32" fill="white"/>
-                                              </clipPath>
-                                            </defs>
-                                          </svg>
-                                    </span>
-                                </div>
-                                <h4>Delete Education</h4>
-                                <p>Are you sure you want to delete this Educational qualification? This action cannot be undone</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-12 col-12">
-                            <div class="submition_btn align-items-center btn_center">
-                                <button class="copy_button_link">No, Return</button>
-                                <button class="copy_button_link delete_buttons">Yes, Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-          </div>
-        </div>
-    </div>
+    // JavaScript to handle the delete modal
+    const deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // Button that triggered the modal
+        const projectId = button.getAttribute('data-project-id'); // Get project ID from data attribute
+        const input = deleteModal.querySelector('#delete_project_id'); // Find the input
+        input.value = projectId; // Set input value
+    });
+</script>
+

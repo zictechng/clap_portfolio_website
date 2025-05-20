@@ -21,9 +21,6 @@
 
             <!-- Content Row -->
             <div class="row">
-
-
-
                 <!-- Creating project steps -->
                 <div class="col-xl-8 col-md-12 col-12 mb-4">
                     <div class="card shadow py-2">
@@ -31,7 +28,7 @@
                             <div class="top_main_headings">
                                 <p class="h5 mb-0 text-gray-800"><strong> Your data portfolio</strong></p>
                             </div>
-                            
+
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2 mb-5">
                                     <div class="row no-gutters align-items-center">
@@ -207,7 +204,7 @@
 
 
                 <div class="col-lg-4 mb-4">
-                   
+
 
 
                     <!-- Approach -->
@@ -215,12 +212,8 @@
                         <div class="text-center">
                             <div class="row d-flex justify-content-center">
 
-
-
                             </div>
                         </div>
-
-
 
                       <div class="row px-2 template-demo justify-content-center mb-2 mt-2">
                         <div class="col-sm-3 col-md-4 col-6 circle-progress-block">
@@ -248,9 +241,15 @@
                             <!-- Portfolio Indicator-->
                             <div class="d-flex align-items-center justify-content-between px-4">
                                 <div class="d-flex align-items-center">
+
+                                    @if(!empty($user_details->profile_url) && file_exists(public_path('profile_images/' . $user_details->profile_url)))
+                                    <img src="{{ asset('profile_images/' . $user_details->profile_url) }}" alt="Profile Image" class="rounded-5 mr-2" width="80" height="80">
+                                    @else
                                     <img class="rounded-5 mr-2" width="80" height="80" src="{{asset('assets/img/team/user_profile.png')}}">
+                                    @endif
+
                                     <div class="ms-4">
-                                        <div class="small text-dark author_name"><b>Abel Developer</b></div>
+                                        <div class="small text-dark author_name"><b>{{ $user_details->name . ' '. $user_details->lname }}</b></div>
                                         <div class="text-xs text-muted author_deg">Customer Service Representative</div>
                                      </div>
 

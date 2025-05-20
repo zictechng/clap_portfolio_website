@@ -18,9 +18,16 @@
                     <!-- Portfolio Indicator-->
                     <div class="d-flex align-items-center justify-content-between px-4">
                         <div class="d-flex align-items-center">
+                            @if(!empty($user_details->profile_url) && file_exists(public_path('profile_images/' . $user_details->profile_url)))
+                            <img src="{{ asset('profile_images/' . $user_details->profile_url) }}" alt="Profile Image" class="rounded-5 mr-2" width="48" height="48">
+
+                            @else
                             <img class="rounded-5 mr-2" width="48" height="48" src="{{asset('assets/img/team/user_profile.png')}}">
+                            @endif
+
+
                             <div class="ms-4">
-                                <div class="small_admin_text">Hello <b>Abel</b></div>
+                                <div class="small_admin_text">Hello <b>{{ $user_details->name }}</b></div>
                                 <div class="text-xs text-muted">Portfolio Strength</div>
                              </div>
 
@@ -107,7 +114,7 @@
                     <div class="row dash_section2">
                         <div class="card custom_card bg-light text-black block">
                             <div class="card-body h5 mb-3 font-weight-bold text-gray-800">
-                                <h4>0</h4>
+                                <h4>{{ empty($count_project) ? 0 : $count_project }}</h4>
                                 <div class=" pgc_text">Project created</div>
                             </div>
                         </div>
