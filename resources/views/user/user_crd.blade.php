@@ -586,7 +586,7 @@
                         </div>
                         <div class="col-lg-12 col-12">
                             <div class="submition_btn align-items-center btn_center">
-                                <button class="copy_button_link" data-bs-dismiss="modal">No, Return</button>
+                                <button class="copy_button_link" type="button" class="btn-close" data-bs-dismiss="modal">No, Return</button>
                                 <button class="copy_button_link delete_buttons" type="submit">Yes, Delete</button>
                             </div>
                         </div>

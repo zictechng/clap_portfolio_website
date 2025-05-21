@@ -19,6 +19,7 @@ use App\Http\Livewire\User\UserProfileComponent;
 use App\Http\Livewire\User\UserStoreCredentials;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectInteractionController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Livewire\User\EditProjectComponent;
 use App\Http\Livewire\VerifyAccount;
@@ -40,9 +41,9 @@ use Illuminate\Support\Facades\Route;
 // });
 
 // Generate routes goes here
-Route::get('/', HomeComponent::class);
+Route::get('/', HomeComponent::class)->name('home');
 Route::get('/testimonial', TestimonialComponent::class);
-Route::get('/project', IndividualProjectComponent::class);
+Route::get('/project/{slug}', IndividualProjectComponent::class)->name('project.details');
 Route::get('/profile', ProfileComponent::class);
 
 Route::get('/user-login', UserLoginComponent::class)->name('user-login');
@@ -60,6 +61,15 @@ Route::post('/otp_activation', [RegisteredUserController::class, 'ActivateAccoun
 
 Route::post('/login', [LoginAuthenticatedSessionController::class, 'store'])
 ->name('login');
+
+
+Route::post('/project/{id}/like', [ProjectInteractionController::class, 'like'])
+->name('project.like');
+
+Route::post('/project/{id}/comment', [ProjectInteractionController::class, 'comment'])
+->name('project.comment');
+
+Route::get('/profile/{user}', ProfileComponent::class)->name('user.profile');
 
 // Route::middleware([
 //     'auth:sanctum',
@@ -86,7 +96,7 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
 
 
     // All post url goes here
-    Route::post('/user/add-project', NewProject::class)->name('user.new-project');
+    //Route::post('/user/add-project', NewProject::class)->name('user.new-project');
     Route::post('/user/add-project', [ProjectController::class, 'add_newProject'])->name('user.add-project');
     Route::post('/user/project-tools', [ProjectController::class, 'project_tools'])->name('user.project-tools');
     Route::post('/user/embed-media', [ProjectController::class, 'save_EmbedMedia'])->name('user.embed-media');

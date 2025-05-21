@@ -1,3 +1,8 @@
+@php
+    $user = Auth::user();
+    $profileImage = $user && $user->profile_url && file_exists(public_path('profile_images/' . $user->profile_url));
+@endphp
+
 <div class="rts__menu d-flex gap-5 align-items-center">
     <div class="navigation d-none d-lg-block">
         <nav class="navigation__menu" id="offcanvas__menu">
@@ -14,24 +19,20 @@
 
                 <li class="navigation__menu--item">
                     <a href="#" class="navigation__menu--item__link">Showcase</a>
-
                 </li>
 
                 <li class="navigation__menu--item">
                     <a href="/testimonial" class="navigation__menu--item__link">Testimonials</a>
-
                 </li>
 
                 <li class="navigation__menu--item">
                     <a href="#" class="navigation__menu--item__link">Blog</a>
-
                 </li>
             </ul>
         </nav>
     </div>
 
         @if (Route::has('login'))
-
         @auth
         @if(Auth::user()->user_type === 'ADM')
 
@@ -59,9 +60,15 @@
                     </div>
                     <div class="user__info ">
                         <div class="d-flex gap-3 align-items-center pointer" data-bs-toggle="dropdown">
-                            <div class="user__image if__employer">
-                                <i class="bi bi-person-circle" style="font-size: 2rem; color: #7d8087;"></i>
-                            </div>
+
+                            @if($profileImage)
+                                <img class="rounded" src="{{ asset('profile_images/' . $user->profile_url) }}" alt="{{ $user->name }}" style="width: 35px; height: 35px;">
+                            @else
+                                <div class="user__image">
+                                    <i class="bi bi-person-circle" style="font-size: 2rem; color: #aeb0b5;" width="35px"></i>
+                                </div>
+                            @endif
+
                             <div class="user__name d-none d-xl-block">
                                 <span>{{Auth::user()->name}}</span>
                             </div>
@@ -71,10 +78,9 @@
                         </div>
                         <ul class="rts__dropdown dropdown-menu top-25">
                             <li><a class="dropdown-item" href="{{route('user.dashboard')}}">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li><a class="dropdown-item" href="#">My Projects</a></li>
-                            <li><a class="dropdown-item" href="#">Message</a></li>
-                            <li><a class="dropdown-item" href="#">Change Password</a></li>
+                            <li><a class="dropdown-item" href="/user/profile">Profile</a></li>
+                            <li><a class="dropdown-item" href="/user/portfolio">My Projects</a></li>
+                            <li><a class="dropdown-item" href="/user/edit-profile">Change Password</a></li>
                             <li><a class="dropdown-item" href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>
 
                         </ul>
@@ -98,17 +104,6 @@
             </button>
         </div>
 
-        {{-- <div class="header__right__btn d-flex gap-3">
-            <a href="#" class="small__btn he-3 d-none d-sm-flex no__fill__btn border-6 font-xs"
-                aria-label="Login Button" data-bs-toggle="modal" data-bs-target="#loginModal">
-
-                Sign In</a>
-            <a href="#" class="small__btn he-3 d-none d-sm-flex fill__btn border-6 font-xs gradient_btn"
-                aria-label="Job Posting Button" data-bs-target="#signupModal" data-bs-toggle="modal">Sign Up</a>
-            <button class="d-md-block d-lg-none" type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvas" aria-controls="offcanvas"><i
-                    class="fa-sharp fa-regular fa-bars"></i></button>
-        </div> --}}
         @endif
 
     @endif

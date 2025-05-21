@@ -5,6 +5,7 @@ namespace App\Http\Livewire\User;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Illuminate\Support\Str;
 
 class NewProject extends Component
 {
@@ -24,6 +25,19 @@ class NewProject extends Component
         return view('livewire.user.new-project', ['user_details' => $user])->layout('layouts.userMaster');
     }
 
+        private function generateUniqueSlug($name)
+            {
+                $slug = Str::slug($name);
+                $original = $slug;
+                $count = 1;
+
+                while (Project::where('project_slug', $slug)->exists()) {
+                    $slug = $original . '-' . $count++;
+                }
+
+                return $slug;
+            }
+
     // function to add new project
     public function addProject()
     {
@@ -35,7 +49,7 @@ class NewProject extends Component
         $project->project_title = $this->project_title;
         $project->project_concept = $this->project_concept;
         $project->project_description = $this->project_description;
-
+        $project->project_slug = $this->generateUniqueSlug($project->project_title);
         $project->save();
         session()->flash('message', 'Project added successfully!');
     }

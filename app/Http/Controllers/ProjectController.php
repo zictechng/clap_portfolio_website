@@ -21,10 +21,8 @@ class ProjectController extends Controller
     public $user_email;
 
 
-
     public function add_newProject(Request $request)
     {
-
         // Validate the request
         $validated = $request->validate([
             'project_title' => 'required|string|max:200',
@@ -37,6 +35,7 @@ class ProjectController extends Controller
 
         $user = auth()->user();
         $transactionTrackId = $this->generateTransactionId();
+        $slug = $this->generateUniqueSlug($validated['project_title']);
         $project = new Project();
 
         // $project->user_uid = $user->id;
@@ -50,6 +49,7 @@ class ProjectController extends Controller
         $project->project_title = $validated['project_title'];
         $project->project_concept = $validated['project_concept'];
         $project->project_description = $validated['project_description'];
+        $project->project_slug = $slug;
         $project->project_tag_id = $transactionTrackId;
         $project->project_tag = $transactionTrackId;
 
@@ -69,9 +69,9 @@ class ProjectController extends Controller
         $project->save();
         session(['transaction_id' => $transactionTrackId]);
         return redirect()->back()->with('message', 'Project created successfully!');
-    }
+        }
 
-    protected function generateTransactionId(): string
+        protected function generateTransactionId(): string
         {
             return 'CLAM' . strtoupper(Str::random(10)) . '-' . now()->format('YmdHis');
         }
@@ -140,7 +140,6 @@ class ProjectController extends Controller
                 }
             }
 
-
         // function for embed media goes here
         public function save_EmbedMedia(Request $request)
             {
@@ -192,7 +191,6 @@ class ProjectController extends Controller
                 }
             }
 
-
         // function to update the project
         public function updateUserProject(Request $request)
             {
@@ -206,13 +204,15 @@ class ProjectController extends Controller
                 ], [
                     'image.max' => 'The project image size should not exceed 5MB.',
                 ]);
-
+                
+                $slug = $this->generateUniqueSlug($validated['project_title']);
                 $user = auth()->user();
                 $project = Project::findOrFail($validated['project_id']);
 
                 $project->project_title = $validated['project_title'];
                 $project->project_concept = $validated['project_concept'];
                 $project->project_description = $validated['project_description'];
+                $project->project_slug = $slug;
 
                 if ($request->hasFile('image')) {
                     // Delete old image if exists
@@ -238,68 +238,68 @@ class ProjectController extends Controller
 
         // function to update the project tools
         public function updateUserProjectTools(Request $request)
-        {
-            // Validate the request
-            $user = auth()->user();
+            {
+                // Validate the request
+                $user = auth()->user();
 
-                // Validate input field
-                $validated = $request->validate([
-                    'project_id' => 'required|exists:projects,id',
-                    'tool_data_url' => 'nullable|url|max:255',
-                    ], [
-                    'tool_data_url.url' => 'Please enter a valid data source URL if provided.',
-                    'tool_data_url.max' => 'URL cannot exceed 255 characters.',
-                    ]);
+                    // Validate input field
+                    $validated = $request->validate([
+                        'project_id' => 'required|exists:projects,id',
+                        'tool_data_url' => 'nullable|url|max:255',
+                        ], [
+                        'tool_data_url.url' => 'Please enter a valid data source URL if provided.',
+                        'tool_data_url.max' => 'URL cannot exceed 255 characters.',
+                        ]);
 
-                // Collect selected tools
-                $selectedTools = collect([
-                    $request->input('tool_ms_excel'),
-                    $request->input('tool_python'),
-                    $request->input('tool_sql'),
-                    $request->input('tool_apache'),
-                    $request->input('tool_tableau'),
-                    $request->input('tool_power_bi'),
-                    $request->input('tool_other'),
-                ])->filter()->values();
+                    // Collect selected tools
+                    $selectedTools = collect([
+                        $request->input('tool_ms_excel'),
+                        $request->input('tool_python'),
+                        $request->input('tool_sql'),
+                        $request->input('tool_apache'),
+                        $request->input('tool_tableau'),
+                        $request->input('tool_power_bi'),
+                        $request->input('tool_other'),
+                    ])->filter()->values();
 
-                // Validate at least one tool is selected
-                if ($selectedTools->isEmpty()) {
-                    return back()->withErrors(['tools' => 'Please select at least one tool.'])->withInput();
-                }
-
-                // Get current project details
-
-                $project_details = Project::findOrFail($validated['project_id']);
-
-                if (!$project_details) {
-                    return back()->withErrors(['project_tag' => 'current project session has expired! Try again.'])->withInput();
-                }
-
-                // Loop and save tools
-                $allSaved = true;
-                // Delete existing tools for this project before adding new ones
-                ProjectTools::where('project_id', $validated['project_id'])->delete();
-
-                foreach ($selectedTools as $toolName) {
-                    $project_tool = new ProjectTools();
-                    $project_tool->user_uid = $user->id;
-                    $project_tool->project_id = $project_details->id;
-                    $project_tool->user_email = $user->email;
-                    $project_tool->project_tools = $toolName;
-                    $project_tool->data_url_source = $validated['tool_data_url'] ?? null;
-
-                    if (!$project_tool->save()) {
-                        $allSaved = false;
+                    // Validate at least one tool is selected
+                    if ($selectedTools->isEmpty()) {
+                        return back()->withErrors(['tools' => 'Please select at least one tool.'])->withInput();
                     }
-                }
 
-                // Return based on save status
-                if ($allSaved) {
-                    return back()->with('message', 'Tools update successfully!');
-                } else {
-                    return back()->withErrors(['error' => 'Failed to update the tools. Please try again.'])->withInput();
-                }
-        }
+                    // Get current project details
+
+                    $project_details = Project::findOrFail($validated['project_id']);
+
+                    if (!$project_details) {
+                        return back()->withErrors(['project_tag' => 'current project session has expired! Try again.'])->withInput();
+                    }
+
+                    // Loop and save tools
+                    $allSaved = true;
+                    // Delete existing tools for this project before adding new ones
+                    ProjectTools::where('project_id', $validated['project_id'])->delete();
+
+                    foreach ($selectedTools as $toolName) {
+                        $project_tool = new ProjectTools();
+                        $project_tool->user_uid = $user->id;
+                        $project_tool->project_id = $project_details->id;
+                        $project_tool->user_email = $user->email;
+                        $project_tool->project_tools = $toolName;
+                        $project_tool->data_url_source = $validated['tool_data_url'] ?? null;
+
+                        if (!$project_tool->save()) {
+                            $allSaved = false;
+                        }
+                    }
+
+                    // Return based on save status
+                    if ($allSaved) {
+                        return back()->with('message', 'Tools update successfully!');
+                    } else {
+                        return back()->withErrors(['error' => 'Failed to update the tools. Please try again.'])->withInput();
+                    }
+            }
 
         // function for update embed media goes here
         public function updateEmbedMedia(Request $request)
@@ -375,5 +375,18 @@ class ProjectController extends Controller
                 } else {
                     return back()->withErrors(['error' => 'Failed to delete the project. Please try again.'])->withInput();
                 }
+            }
+
+            private function generateUniqueSlug($name)
+            {
+                $slug = Str::slug($name);
+                $original = $slug;
+                $count = 1;
+
+                while (Project::where('project_slug', $slug)->exists()) {
+                    $slug = $original . '-' . $count++;
+                }
+
+                return $slug;
             }
 }

@@ -16,4 +16,9 @@ class Education extends Model
         'start_date',
         'end_date',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

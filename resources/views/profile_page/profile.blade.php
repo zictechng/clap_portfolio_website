@@ -167,12 +167,15 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @php
+                                                $hashid = \Vinkla\Hashids\Facades\Hashids::encode($user_details->id);
+                                            @endphp
                                             <div class="col-lg-9 col-8  col-md-6 col-12">
                                                 <div class="profile_input_item">
                                                     <label for="first_name">Profile URL</label>
                                                     <div class="input_item">
                                                         <input type="text"
-                                                        value="{{ $user_details->id }}" placeholder="Profile URL" readonly>
+                                                        value="{{ url('/profile/'.$hashid) }}" placeholder="Profile URL" readonly>
                                                     </div>
                                                 </div>
                                             </div>

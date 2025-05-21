@@ -322,8 +322,8 @@ ul.social li{
             	<tr>
             		<td>
             			<div class="text" style="padding: 0 2.5em; text-align: center;">
-            				<h3>Please verify your email</h3>
-            				<h4>Use the code below to activate your account before you can be able to login</h4>
+            				<h3>Please verify your account</h3>
+            				<h4>Use the code below to activate your account before you can access your account</h4>
             				<p><h3><a class="btn btn-primary"><strong>{{$otp}}</strong></a></h3></p>
             			</div>
             		</td>

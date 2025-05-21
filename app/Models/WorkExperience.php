@@ -17,5 +17,9 @@ class WorkExperience extends Model
         'job_end_date',
         'job_active',
     ];
-
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
