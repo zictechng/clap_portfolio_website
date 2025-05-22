@@ -58,12 +58,15 @@
 
                     <!-- <div class="text-white font-20 fw-medium mb-3 h6 ">Subscribe For Newsletter</div> -->
                     <p class="text-white br-sm-none">Don't miss out of our <br> unique project notifications</p>
+                    <form action="{{route('user.subscriber')}}" method="POST">
+                        @csrf
                     <div class="custom__input mt-4 mb-3">
-                    <input type="email" name="semail" class="form-control" id="semail" placeholder="Your Phone no" required>
+                    <input type="text" name="phone_number" value="{{old('phone_number')}}" class="form-control" id="semail" placeholder="Your Phone no" required>
                     </div>
-                    <form action="#" class="d-flex align-items-center justify-content-between  newsletter">
-                        <input type="email" name="semail" id="semail" class="form-control" placeholder="Enter your email" required>
+                    <div class="d-flex newsletter">
+                        <input type="email" name="sub_email" value="{{old('sub_email')}}" id="semail" class="form-control" placeholder="Enter your email" required>
                         <button type="submit" class="rts__btn fill__btn">Subscribe</button>
+                    </div>
                     </form>
                 </div>
                 <!-- newsletter form end -->

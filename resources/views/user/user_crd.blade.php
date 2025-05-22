@@ -26,7 +26,7 @@
                                     @if(!empty($user_details?->profile_url) && file_exists(public_path('profile_images/' . $user_details?->profile_url)))
                                         <img src="{{ asset('profile_images/' . $user_details?->profile_url) }}" alt="Profile Image" style="max-width: 80px; height: 80px;" class="rounded-circle object-fit: cover;">
                                     @else
-                                        <img src="{{ asset('dashboardAsset/images/avatar.png') }}" alt="Default Image" style="max-width: 100%; height: auto;">
+                                        <img src="{{ asset('assets/img/team/user_profile.png') }}" alt="Default Image" style="width: 80px; height: auto;" class="rounded-circle">
                                     @endif
 
                                 </div>
@@ -504,8 +504,8 @@
                                                               Dropdown button
                                                             </button>
                                                             <ul class="dropdown-menu custom_dd_links">
-                                                                <li><a class="dropdown-item" href="#">View project page</a></li>
-                                                                <li><a class="dropdown-item" href="#">Copy project link</a></li>
+                                                                <li><a class="dropdown-item" href="{{ route('project.details', ['slug' => $project->project_slug]) }}" target="_blank">View project page</a></li>
+                                                                <li><a class="dropdown-item" href="{{ route('project.details', ['slug' => $project->project_slug]) }}" id="project_Link" onclick="copyProfileHref(event)">Copy project link</a></li>
                                                                 <li><a class="dropdown-item" href="{{ route('user.edit-project', Crypt::encrypt($project->id)) }}">Edit project</a></li>
                                                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-project-id="{{ $project->id }}">Delete project</a></li>
                                                             </ul>
@@ -653,5 +653,21 @@
         const input = deleteModal.querySelector('#delete_project_id'); // Find the input
         input.value = projectId; // Set input value
     });
+</script>
+
+<script>
+    function copyProfileHref(event) {
+        event.preventDefault(); // Prevent the link from navigating
+
+        const link = event.currentTarget.href;
+
+        navigator.clipboard.writeText(link)
+            .then(() => {
+                alert("Project Link copied to clipboard!");
+            })
+            .catch(err => {
+                console.error("Failed to copy: ", err);
+            });
+    }
 </script>
 

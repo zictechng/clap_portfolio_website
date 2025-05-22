@@ -78,6 +78,11 @@ class User extends Authenticatable
             return $this->hasMany(WorkExperience::class, 'user_uid');
         }
 
+        public function socialLink()
+        {
+            return $this->hasOne(SocialLink::class, 'user_uid');
+        }
+
         // public function followers()
         // {
         //     return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');

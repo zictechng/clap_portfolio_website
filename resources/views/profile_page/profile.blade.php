@@ -133,7 +133,7 @@
                                                 @if(!empty($user_details->profile_url) && file_exists(public_path('profile_images/' . $user_details->profile_url)))
                                                     <img src="{{ asset('profile_images/' . $user_details->profile_url) }}" alt="Profile Image" style="max-width: 80px; height: 80px;" class="rounded-circle object-fit: cover;">
                                                 @else
-                                                    <img src="{{ asset('dashboardAsset/images/profile_pics.png') }}" alt="Default Image" style="max-width: 100%; height: auto;">
+                                                    <img src="{{ asset('assets/img/team/user_profile.png') }}" alt="Default Image" style="width: 80px; height: auto;">
                                                 @endif
 
                                                 {{-- <img src="{{asset('dashboardAsset/images/profile_pics.png')}}" alt="" srcset=""> --}}
@@ -175,14 +175,16 @@
                                                     <label for="first_name">Profile URL</label>
                                                     <div class="input_item">
                                                         <input type="text"
-                                                        value="{{ url('/profile/'.$hashid) }}" placeholder="Profile URL" readonly>
+                                                        value="{{ url('/profile/'.$hashid) }}"
+                                                        id="profile_url"
+                                                        placeholder="Profile URL" readonly>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-md-6 col-12">
                                                 <div class="profile_input_item">
                                                     <label for="first_name"></label>
-                                                    <button class="copy_button_link">Copy Link</button>
+                                                    <button class="copy_button_link" onclick="copyProfileUrl()">Copy Link</button>
                                                 </div>
                                             </div>
                                             <div class="col-lg-12 col-12">
@@ -851,4 +853,21 @@
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./dashboardAsset/js/script.js"></script>
 </body>
+
+<script>
+    function copyProfileUrl() {
+        const input = document.getElementById("profile_url");
+        input.select();
+        input.setSelectionRange(0, 99999); // For mobile devices
+
+        // Copy the text inside the input
+        navigator.clipboard.writeText(input.value)
+            .then(() => {
+                alert("Profile URL copied to clipboard!");
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+    }
+</script>
 </html>

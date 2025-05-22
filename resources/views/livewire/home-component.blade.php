@@ -17,10 +17,27 @@
                 <div class="rts__slide__next slider__btn"><i class="fa-sharp fa-solid fa-chevron-left"></i></div>
                 <div class="rts__slide__prev slider__btn"><i class="fa-sharp fa-solid fa-chevron-right"></i></div>
             </div> --}}
+                @if(Session::has('message'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert" role="alert">
+                    {{Session::get('message')}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                @endif
+                @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert" role="alert">
+                    <strong>Whoops!</strong> There were some problems with your input:
+                    <ul class="list-disc list-inside mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                @endif
+
             @if($hero_project->count())
             <div class="row justify-content-center">
                 <div class="col-lg-11">
-
 
                     <div class="rts__testimonial__active overflow-hidden swiper-data swiper-initialized swiper-horizontal swiper-pointer-events swiper-backface-hidden" data-swiper="{
                         &quot;slidesPerView&quot;: 1,

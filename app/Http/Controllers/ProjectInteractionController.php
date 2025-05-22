@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\SubscriberMailList;
 use Illuminate\Http\Request;
 
 class ProjectInteractionController extends Controller
@@ -59,4 +60,25 @@ class ProjectInteractionController extends Controller
             return back()->with('message', 'Comment submitted.');
         }
 
+    public function subscriberList(Request $request)
+        {
+            $request->validate([
+                'phone_number' => ['required', 'regex:/^\+?[0-9\s\-]{10,20}$/'],
+                'sub_email' => 'required|email|max:255',
+            ], [
+                'phone_number.regex' => 'Please enter a valid phone number.',
+            ]);
+            $ip = $request->ip();
+            // Store the subscriber details in the database
+            $subscriber = new SubscriberMailList();
+            $subscriber->user_phone = $request->phone_number;
+            $subscriber->user_email = $request->sub_email;
+            $subscriber->ip_address = $ip; // Optional IP tracking
+
+            if ($subscriber->save()) {
+                return back()->with('message', 'Details added to list successfully!');
+            } else {
+                return back()->withErrors(['error' => 'Failed to add your details. Please try again.'])->withInput();
+            }
+        }
 }

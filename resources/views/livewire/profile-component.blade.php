@@ -19,16 +19,20 @@
                         <div class="social_link">
                             <ul>
                                 <li>
-                                    <a href="">
+                                    <a href="{{ $social_link?->social_linkedin }}" target="_blank" rel="noopener noreferrer">
                                         <span>
-                                            <img src="{{asset('assets/image/linkdin.png')}}" alt="" srcset="">
+                                            @if ($social_link?->social_linkedin)
+                                                <img src="{{ asset('assets/image/linkdin.png') }}" alt="">
+                                            @endif
                                         </span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="">
+                                    <a href="{{$social_link?->social_github}}" target="_blank" rel="noopener noreferrer">
                                         <span>
+                                            @if ($social_link?->social_github)
                                             <img src="{{asset('assets/image/github.png')}}" alt="" srcset="">
+                                            @endif
                                         </span>
                                     </a>
                                 </li>
@@ -73,7 +77,11 @@
                             <div class="faq_content">
                                 @forelse ($education as $educations)
                                 <p>
-                                    Text goes here
+                                    <span style="font-weight: 600;">{{ $educations->degree_name }}</span>
+                                    <br/>
+                                    {{$educations->institution_name}}
+                                    <br/>
+                                    <span style="font-size: 0.775rem;">({{ \Carbon\Carbon::parse($educations->start_date)->format('d M, Y') }} - {{  \Carbon\Carbon::parse($educations->end_date)->format('d M, Y') }})</span>
                                 </p>
                                 @empty
                                 <p>
@@ -92,7 +100,18 @@
                             <div class="faq_content">
                                 @forelse ($work_experience as $work_experiences)
                                 <p>
-                                    Text goes here
+                                    <span style="font-weight: 600;">{{ $work_experiences->job_title }}</span>
+                                    <br/>
+                                    {{$work_experiences->job_organization}}
+                                    <br/>
+                                        <span style="font-size: 0.775rem;">({{ \Carbon\Carbon::parse($work_experiences->job_start_date)->format('d M, Y') }} -
+                                        @if ($work_experiences->job_end_date)
+                                        {{ \Carbon\Carbon::parse($work_experiences->job_end_date)->format('d M, Y') }}
+                                    @else
+                                        Till date
+                                    @endif
+                                    </span>
+                                    <br/>
                                 </p>
                                 @empty
                                 <p>
@@ -184,6 +203,9 @@
                         </div>
                         @endforeach
                     </div>
+                        <div class="mt-3">
+
+                        </div>
                     @else
                     <p class="text-center text-gray-500">No project found at the moment.</p>
                     @endif
@@ -239,7 +261,7 @@
                     <!-------------------------------------post lernmore section-------------------------------->
                     <div class="lern_more_areas">
                         <a href="">
-                            Load more
+                            {{ $projects->links() }}
                         </a>
                     </div>
                 </div>

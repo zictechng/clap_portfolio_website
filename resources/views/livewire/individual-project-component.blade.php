@@ -275,6 +275,10 @@
                                                 </a>
                                             </div>
                                             <div class="user_profile d-flex align-items-center gap-3">
+                                                @php
+                                                    $hashid = \Vinkla\Hashids\Facades\Hashids::encode($projects->user->id);
+                                                @endphp
+
                                                 <div class="user_image">
                                                     @if(!empty($projects?->user->profile_url) && file_exists(public_path('profile_images/' . $projects?->user->profile_url)))
                                                     <img class="rounded" src="{{ asset('profile_images/' . $projects?->user->profile_url) }}" alt="{{ $projects?->user->name }}" style="width: 28px; height: 28px;">
@@ -282,9 +286,11 @@
                                                         <i class="bi bi-person-circle" style="font-size: 2rem; color: #7d8087;" width="30px"></i>
                                                     @endif
                                                 </div>
-                                                <div class="user_details">
-                                                    <h4>{{$projects?->user->name}}</h4>
-                                                </div>
+                                                    <a href="{{ route('user.profile', ['user' => $hashid]) }}">
+                                                    <div class="user_details">
+                                                        <h4>{{$projects?->user->name}}</h4>
+                                                    </div>
+                                                    </a>
                                                 <div class="user_check">
                                                     <img src="{{asset('assets/image/check.png')}}" alt="check" srcset="">
                                                 </div>

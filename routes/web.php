@@ -69,6 +69,9 @@ Route::post('/project/{id}/like', [ProjectInteractionController::class, 'like'])
 Route::post('/project/{id}/comment', [ProjectInteractionController::class, 'comment'])
 ->name('project.comment');
 
+Route::post('/subscribers', [ProjectInteractionController::class, 'subscriberList'])
+->name('user.subscriber');
+
 Route::get('/profile/{user}', ProfileComponent::class)->name('user.profile');
 
 // Route::middleware([

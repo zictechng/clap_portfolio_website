@@ -16,4 +16,8 @@ class SocialLink extends Model
         'user_email',
         'user_uid',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

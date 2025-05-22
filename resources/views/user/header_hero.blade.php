@@ -15,7 +15,11 @@
                     </p>
 
                     <div></div>
+                    @if(Auth::user())
+                    
+                    @else
                     <a href="/user-register" class="rts__btn pricing__btn rounded-5 he-4 fill__btn mb-40 text-white">Create My Profile</a>
+                    @endif
 
                 </div>
 

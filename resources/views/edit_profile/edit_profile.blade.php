@@ -161,7 +161,7 @@
                                                 @if(!empty($user_details?->profile_url) && file_exists(public_path('profile_images/' . $user_details?->profile_url)))
                                                     <img src="{{ asset('profile_images/' . $user_details?->profile_url) }}" alt="Profile Image" style="max-width: 88px; height: 88px;" class="rounded-circle object-fit: cover;" >
                                                 @else
-                                                    <img src="{{ asset('dashboardAsset/images/profile_pics.png') }}" alt="Default Image" style="max-width: 100%; height: auto;">
+                                                    <img src="{{ asset('assets/img/team/user_profile.png') }}" alt="Default Image" style="width: 80px; height: auto;">
                                                 @endif
                                             </div>
                                             <div class="profile_image_content">
