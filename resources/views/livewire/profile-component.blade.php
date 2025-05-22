@@ -207,11 +207,13 @@
 
                         </div>
                     @else
-                    <p class="text-center text-gray-500">No project found at the moment.</p>
+                    <p class="text-center text-gray-500">This user has no project at the moment.</p>
                     @endif
                     <!------------------------------------Grid item ------------------------------------>
                     <div class="project_wrapers box_grid" style="display: none;">
+                        @if($projects->count())
                             <div class="row">
+                                @foreach ($projects as $project_data)
                                 <div class="col-lg-6 col-6">
                                     <div class="project_card_item d-flex gap-3">
                                         <div class="project_image">
@@ -254,9 +256,11 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                @endforeach
                             </div>
+                        @else
 
+                        @endif
                         </div>
                     <!-------------------------------------post lernmore section-------------------------------->
                     <div class="lern_more_areas">

@@ -304,9 +304,9 @@ ul.social li{
           <td valign="top" class="bg_white" style="padding: 1em 2.5em 0 2.5em;">
           	<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
           		<tr>
-          			<td class="logo" style="text-align: center;">
+          			<td style="text-align: center; color: #000404; font-size: 24px font-weight: 700; font-family: 'Lato', sans-serif;">
 			            <h1><a href="#">{{ config('mail.from.name') }}</a></h1>
-			          </td>
+			        </td>
           		</tr>
           	</table>
           </td>
@@ -322,9 +322,9 @@ ul.social li{
             	<tr>
             		<td>
             			<div class="text" style="padding: 0 2.5em; text-align: center;">
-            				<h3>Please verify your account</h3>
-            				<h4>Use the code below to activate your account before you can access your account</h4>
-            				<p><h3><a class="btn btn-primary"><strong>{{$otp}}</strong></a></h3></p>
+            				<h3 style="font-size: 24px; font-weight: 300;">Please verify your account</h3>
+            				<h4 style="font-family: 'Lato', sans-serif; color: #000000; margin-top: 0; font-weight: 400;">Use the code below to activate your account before you can access your account</h4>
+            				<p><h3><a style="border-radius: 5px; background: #115391; color: #ffffff; padding: 10px 15px; display: inline-block;"><strong>{{$otp}}</strong></a></h3></p>
             			</div>
             		</td>
             	</tr>

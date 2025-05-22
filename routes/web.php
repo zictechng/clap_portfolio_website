@@ -44,7 +44,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', HomeComponent::class)->name('home');
 Route::get('/testimonial', TestimonialComponent::class);
 Route::get('/project/{slug}', IndividualProjectComponent::class)->name('project.details');
-Route::get('/profile', ProfileComponent::class);
+//Route::get('/profile', ProfileComponent::class);
 
 Route::get('/user-login', UserLoginComponent::class)->name('user-login');
 Route::get('/user-register', UserRegisterComponent::class);
